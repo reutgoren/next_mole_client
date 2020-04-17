@@ -1,15 +1,14 @@
 import React from 'react';
 import 'filepond/dist/filepond.min.css';
 import { FilePond, registerPlugin } from 'react-filepond';
-
+import { withRouter } from 'react-router-dom';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-
-export default class FileUpload extends React.Component {
+class FileUpload extends React.Component {
 
     constructor(props) {
         super(props);
@@ -137,6 +136,7 @@ export default class FileUpload extends React.Component {
         )
     }
 }
+export default withRouter(FileUpload); 
 
 const divStyle = {
     //padding:'150px'

@@ -125,7 +125,22 @@ body, html, .App, #root, .auth-wrapper {
   background: #db3236;
   opacity: 0.6;
 }
-
+.btnLogin {
+  background:rgb(103, 58, 183);
+  opacity: 0.6;
+}
+.btnSignUp {
+  background: rgb(103, 58, 183);
+  opacity: 0.6;
+}
+.btnLogin:hover {
+  background:rgb(103, 58, 183);
+  opacity: 0.6;
+}
+.btnSignUp:hover {
+  background: rgb(103, 58, 183);
+  opacity: 0.6;
+}
 @media only screen and (max-width : 399px) {
   .btnFacebook,.btnGoogle{
     width: 100%

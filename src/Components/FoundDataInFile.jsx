@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Card, ListGroup, CardDeck, InputGroup, FormControl, Col } from 'react-bootstrap';
-
+import { withRouter } from 'react-router-dom';
 
 class FoundDataInFile extends Component {
     render() {
@@ -61,4 +61,4 @@ class FoundDataInFile extends Component {
     }
 }
 
-export default FoundDataInFile;
+export default withRouter(FoundDataInFile);

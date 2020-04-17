@@ -1,5 +1,9 @@
 import React, { Component } from "react";
 import '../css/index.css';
+import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { withRouter,Router } from 'react-router-dom';
 
 //import FacebookLogin from 'react-facebook-login';
 //import GoogleLogin from 'react-google-login';
@@ -26,9 +30,22 @@ const uiConfig = {
   ]
 };
 
+const MySwal = withReactContent(Swal)
 
-export default class Login extends Component {
+class Login extends Component {
+
+  constructor(props) {
+    super(props)
+
+    let local = false;
+    this.apiUrl = 'https://localhost:44312/api/';
+    if (!local) {
+      this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
+    }
+  }
+
   state = { isSignedIn: false }
+
   uiConfig = {
     signInFlow: "popup",
     signInOptions: [
@@ -50,13 +67,47 @@ export default class Login extends Component {
     })
   }
 
+
+  checkLogin = (data) => {
+    console.log(data)
+    
+   /* const chack={
+      UserEmail: ,
+      UserPassword: 
+    }
+    */
+    fetch(this.apiUrl + 'user', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        return res.json();
+      })
+      .then(result => {
+        console.log(result);
+        if (result){
+          this.props.history.push("/home");
+        }
+        else{
+          MySwal.fire("Email or password are incorrect, please try again", "", "warning")
+        }
+      },
+        (error) => {
+          console.log("err post=", error);
+        });
+    console.log(this.state.usersLiked);
+
+  }
+
   render() {
-
-
     return (
-      
-        <div className="auth-wrapper">
-          <div className="auth-inner">
+
+      <div className="auth-wrapper">
+        <div className="auth-inner">
           <div>
             <form>
               <h3>Sign In</h3>
@@ -78,22 +129,25 @@ export default class Login extends Component {
                 </div>
               </div>
 
-              <button type="submit" className="btn btn-primary btn-block">Submit</button>
-              <button className="btn btn-primary btn-block">To Home Page</button>
+              <button type="submit" style={{ borderColor: 'rgba(103, 58, 183, 1)', backgroundColor: 'rgba(103, 58, 183, 1)'}} onClick={this.checkLogin()} className="btn btn-primary btn-block">Submit</button>
               <p className="forgot-password text-right">
-               {/* Forgot <a href="#">password?</a> */}
-                Forgot <p>password?</p>
-                              </p>
-                             {/* לא לשכוח להחזיר את זה*/}
+
+                <Link className="nav-link" to="/sign-up">Not registered yet?</Link>
+              </p>
+              <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+
             </form>
           </div>
 
         </div>
-        <div>
-
-          <StyledFirebaseAuth  uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-        </div>
       </div>
     );
   }
+}
+export default withRouter(Login);  
+
+
+const divStyle = {
+    //padding:'150px'
+
 }

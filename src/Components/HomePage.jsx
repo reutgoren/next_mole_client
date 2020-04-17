@@ -20,6 +20,7 @@ import Upload from '../Components/Upload.jsx';
 
 //import logo from '../images/logo.png';
 import logo2 from '../images/logo2.png';
+import Nav from '../Components/Nav';
 
 import JsonUpload from '../Components/JsonUpload';
 //import { color } from 'd3';
@@ -57,7 +58,17 @@ const Styles = styled.div`
 `;
 
 class HomePage extends Component {
+  constructor(props) {
+    super(props)
 
+    let local = false;
+    this.apiUrl = 'https://localhost:44312/api/';
+    if (!local) {
+      this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
+    }
+  }
+ 
+  
   state = {
     
       jsonSubject: '',
@@ -111,10 +122,9 @@ class HomePage extends Component {
 
     return (
       <div>
+        <Nav/>
         <Styles>
-
           <Container fluid className='jumbo'>
-
             <div style={{ overflow: "hidden", maxHeight: 360, marginTop: 60, maxWidth: "100%" }} className='overlay'>
               <Row>
                 <Col xs={6} style={{ maxHeight: 250 }}>
@@ -250,13 +260,13 @@ class HomePage extends Component {
   }
 }
 
-export default withRouter(HomePage);   ///לשנות שייראה ככה עם ה  withRouter 
+export default withRouter(HomePage);  
 
 
 
 const styleBTN = {
 
-  fontFamily: 'Roboto medium, sans-serif',
+  //fontFamily: 'Roboto medium, sans-serif',
   fonSize: '14px',
   display: 'inline-block',
   height: '56px',

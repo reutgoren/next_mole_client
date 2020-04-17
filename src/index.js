@@ -6,10 +6,15 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-    <BrowserRouter basename={window.location.pathname || ""}>
+    /*<BrowserRouter basename={window.location.pathname || ""}>
         <Route component={App} />
-    {/*<App />*/}
-</BrowserRouter>,
+    <App />
+</BrowserRouter>
+*/
+<HashRouter>
+    <App/>
+    </HashRouter>,
+    
 document.getElementById("root")
 );
 
