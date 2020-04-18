@@ -3,7 +3,7 @@ import '../css/index.css';
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { withRouter,Router } from 'react-router-dom';
+import { withRouter, Router } from 'react-router-dom';
 
 //import FacebookLogin from 'react-facebook-login';
 //import GoogleLogin from 'react-google-login';
@@ -36,15 +36,22 @@ class Login extends Component {
 
   constructor(props) {
     super(props)
-
     let local = false;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
     }
-  }
+    this.state = {
+      userEmail: '',
+      userPassword: '',
+      isSignedIn: false
+    }
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.checkLogin = this.checkLogin.bind(this);
 
-  state = { isSignedIn: false }
+
+  }
 
   uiConfig = {
     signInFlow: "popup",
@@ -63,22 +70,29 @@ class Login extends Component {
   componentDidMount = () => {
     firebase.auth().onAuthStateChanged(user => {
       this.setState({ isSignedIn: !!user })
-      console.log("user", user)
+      //console.log("user", user)
     })
   }
 
+  handleEmailChange(event) {
+    this.setState({ userEmail: event.target.value });
+  }
 
-  checkLogin = (data) => {
-    console.log(data)
-    
-   /* const chack={
-      UserEmail: ,
-      UserPassword: 
+  handlePasswordChange(event) {
+    this.setState({ userPassword: event.target.value });
+  }
+
+  checkLogin = (event) => {
+    event.preventDefault();
+    const check = {
+      UserEmail: this.state.userEmail,
+      UserPassword: this.state.userPassword
     }
-    */
+
+    console.log(check)
     fetch(this.apiUrl + 'user', {
-      method: 'POST',
-      body: JSON.stringify(data),
+      method: 'GET',
+      body: JSON.stringify(check),
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
       })
@@ -89,10 +103,10 @@ class Login extends Component {
       })
       .then(result => {
         console.log(result);
-        if (result){
+        if (result) {
           this.props.history.push("/home");
         }
-        else{
+        else {
           MySwal.fire("Email or password are incorrect, please try again", "", "warning")
         }
       },
@@ -109,17 +123,19 @@ class Login extends Component {
       <div className="auth-wrapper">
         <div className="auth-inner">
           <div>
-            <form>
+            <form onSubmit={this.checkLogin}>
               <h3>Sign In</h3>
 
               <div className="form-group">
                 <label>Email address</label>
-                <input type="email" className="form-control" placeholder="Enter email" />
+                <input type="email" name="userEmail" onChange={this.handleEmailChange}
+                  className="form-control" placeholder="Enter email" />
               </div>
 
               <div className="form-group">
                 <label>Password</label>
-                <input type="password" className="form-control" placeholder="Enter password" />
+                <input type="password" name="userPassword" onChange={this.handlePasswordChange}
+                  className="form-control" placeholder="Enter password" />
               </div>
 
               <div className="form-group">
@@ -129,8 +145,8 @@ class Login extends Component {
                 </div>
               </div>
 
-              <button type="submit" style={{ borderColor: 'rgba(103, 58, 183, 1)', backgroundColor: 'rgba(103, 58, 183, 1)'}} onClick={this.checkLogin()} className="btn btn-primary btn-block">Submit</button>
-              <p className="forgot-password text-right">
+              <button type="submit" className="btn btn-info btn-block">Submit</button>
+              <p className="forgot-password text-right text-info">
 
                 <Link className="nav-link" to="/sign-up">Not registered yet?</Link>
               </p>
@@ -144,10 +160,10 @@ class Login extends Component {
     );
   }
 }
-export default withRouter(Login);  
+export default withRouter(Login);
 
 
 const divStyle = {
-    //padding:'150px'
+  //padding:'150px'
 
 }
