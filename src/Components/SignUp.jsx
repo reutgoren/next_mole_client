@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter } from 'react-router-dom';
+import { withRouter, Router } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import '../css/index.css';
@@ -31,33 +31,6 @@ class SignUp extends Component {
         this.checkLogin = this.checkLogin.bind(this);  
       }
 
-
-      handleEmailChange(event) {                //לוודא מה האירוע הנכון - און מאוס אאוט
-        this.setState({ userEmail: event.target.value });
-        fetch(this.api, {
-            method: 'GET',
-            headers: new Headers({
-              'Content-Type': 'application/json; charset=UTF-8',
-            })
-          })
-            .then(res => {
-              console.log('res=', res);
-              return res.json();
-            })
-            .then(result => {
-              console.log(result);
-              if (result) {
-                this.props.history.push("/home");
-              }
-              else {
-                MySwal.fire("Email or password are incorrect, please try again", "", "warning")
-              }
-            },
-              (error) => {
-                console.log("err post=", error);
-              });
-      }
-    
       handlePasswordChange(event) {
         this.setState({ userPassword: event.target.value });
       }
@@ -72,13 +45,8 @@ class SignUp extends Component {
         this.setState({ userGender: event.target.value });
       }
             
-
     signUser = (event) => {
         event.preventDefault();
-        var emailStr =this.state.userEmail;
-        var passwordStr=this.state.userPassword;
-        let api= this.apiUrl+"user/"+emailStr+"/"+passwordStr;
-    
         const userToPost={
             UserEmail: this.state.userEmail,
             UserPassword: this.state.userPassword,
@@ -87,7 +55,7 @@ class SignUp extends Component {
             Gender: this.state.userGender
         }
 
-        fetch(api, {
+        fetch(this.apiUrl, {
           method: 'POST',
           body: JSON.stringify(userToPost),
           headers: new Headers({
@@ -104,16 +72,13 @@ class SignUp extends Component {
               this.props.history.push("/home");
             }
             else {
-              MySwal.fire("Email or password are incorrect, please try again", "", "warning")
+              MySwal.fire("This email address is allready registered, please sign up with a different address", "", "warning")
             }
           },
             (error) => {
               console.log("err post=", error);
             });
-        
-    
       }
-
 
     render() {
         return (
@@ -143,16 +108,9 @@ class SignUp extends Component {
                             &nbsp;<input type="radio" name="gender" value="Male"  /> <label>Male</label><br/>
                             &nbsp;<input type="radio" name="gender"  value="Female" /> <label>Female</label>
                         </div>
-                      {/* <input type="radio" name="site_name" 
-                                   value={result.SITE_NAME} 
-                                   checked={this.state.site === result.SITE_NAME} 
-                                   onChange={this.onSiteChanged} />
-                                   */}
                         <button type="submit" className="btn btn-info btn-block">Sign Up</button>
-
                         <p className="forgot-password text-right">
                             <Link className="nav-link text-info" to="/">Already registered?</Link>
-
                         </p>
                     </form>
                 </div>
