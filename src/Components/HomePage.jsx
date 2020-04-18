@@ -61,27 +61,28 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    let local = false;
+    //let local = false;
+    let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
     }
   }
- 
-  
+
+
   state = {
-    
-      jsonSubject: '',
-      jsonDescription: '',
-      jsonData: '',
-      jsonImage: '',
+
+    jsonSubject: '',
+    jsonDescription: '',
+    jsonData: '',
+    jsonImage: '',
 
   }
 
   getJsonData = (data) => {
     console.log("data from child to parent: " + data)
     this.setState({
-      jsonData: JSON.parse(data) 
+      jsonData: JSON.parse(data)
     })
     console.log(this.state.jsonData)
     //alert('homepage line 76 ' + this.state.jsonData)
@@ -91,7 +92,7 @@ class HomePage extends Component {
   getJsonImage = (data) => {
     console.log("image from chile to parent: " + data)
     this.setState({
-      jsonImage: data 
+      jsonImage: data
     })
     console.log(this.state.jsonImage)
     alert('homepage line 86 ' + this.state.jsonImage)
@@ -99,18 +100,19 @@ class HomePage extends Component {
 
   handleSubmit = (e) => {
     let sub = e.target.elements.formSubject.value;
-    let des= e.target.elements.formDescription.value;
+    let des = e.target.elements.formDescription.value;
     this.setState({
       jsonSubject: sub,
       jsonDescription: des
-    }, ()=>{
+    }, () => {
       this.props.history.push({
         pathname: '/graph',
-        //pathname: '/find_fields',
-        state: { jsonSubject: this.state.jsonSubject,
-        jsonDescription: this.state.jsonDescription,
-      jsonData: this.state.jsonData,
-    jsonImage: this.state.jsonImage }
+        state: {
+          jsonSubject: this.state.jsonSubject,
+          jsonDescription: this.state.jsonDescription,
+          jsonData: this.state.jsonData,
+          jsonImage: this.state.jsonImage
+        }
       });
     })
 
@@ -122,7 +124,7 @@ class HomePage extends Component {
 
     return (
       <div>
-        <Nav/>
+        <Nav />
         <Styles>
           <Container fluid className='jumbo'>
             <div style={{ overflow: "hidden", maxHeight: 360, marginTop: 60, maxWidth: "100%" }} className='overlay'>
@@ -150,7 +152,7 @@ class HomePage extends Component {
                 Subject
     </Form.Label>
               <Col sm="10">
-                <Form.Control name='subject' type="text" inputRef={(ref) => { this.subject = ref }} placeholder="Add Subject" />
+                <Form.Control name='subject' type="text" inputref={(ref) => { this.subject = ref }} placeholder="Add Subject" />
               </Col>
             </Form.Group>
 
@@ -159,7 +161,7 @@ class HomePage extends Component {
                 Description
     </Form.Label>
               <Col sm="10">
-                <Form.Control type="text" name='description' inputRef={(ref) => { this.description = ref }} placeholder="Add description" />
+                <Form.Control type="text" name='description' inputref={(ref) => { this.description = ref }} placeholder="Add description" />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="formPlaintextPassword">
@@ -185,82 +187,22 @@ class HomePage extends Component {
                 </Row>
 
               </Col>
-         
+
             </Form.Group>
             <Row>
               <Col sx={12}>
-                <Button type="submit" style={styleBTN} >Create</Button>
-                {/* 
-                <Button type="submit" style={styleBTN} >Create</Button>
-                 */}
+                <Button type="submit" className="bg-info" style={styleBTN} >Create</Button>
               </Col>
             </Row>
-
-          </Form>
-
-        </Container>
-
-
-
-        {/*
-          <Form>
-           
- 
-            <Form.Group as={Row} style={{ textAlign: "center", float: "left" }} controlId="formfile">
-              <Form.Label column sm={4} style={{textAlign:"right"}}>
-                Data
-    </Form.Label>
-              <Col sm={8}>                 
-            <JsonUpload />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row} style={{ width: 300, textAlign: "center", float: "left" }}  controlId="formImg">
-              <Form.Label column sm={4} style={{textAlign:"right"}}>
-                Theme image
-    </Form.Label>
-              <Col sm={8}>                 
-            <Upload />
-              </Col>
-            </Form.Group>
-            
-            <Button type="submit">Create Network</Button>
-          
-          </Form>
-
-*/}
-        {/*
-        <Container style={{ maxWidth: 300, marginLeft: 0, marginTop: 30 }}>
-          <Form  >
-            <Form.Group as={Row} controlId="formHorizontalEmail">
-              <Form.Label column sm={4}>
-                Subject
-    </Form.Label>
-              <Col sm={8}>
-                <Form.Control style={{ width: 300 }} placeholder="Subject" />
-              </Col>
-            </Form.Group>
-
-            <Form.Group as={Row} style={{ width: 300, textAlign: "center", float: "left" }} controlId="formHorizontalPassword">
-              <Form.Label column sm={4}>
-                Description
-    </Form.Label>
-              <Col sm={8}>
-                <Form.Control style={{ width: 300 }} as="textarea" rows="3" placeholder="Description" />
-              </Col>
-            </Form.Group>
-            <Button type="submit">Submit form</Button>
-
           </Form>
         </Container>
-
-*/}
       </div>
 
     )
   }
 }
 
-export default withRouter(HomePage);  
+export default withRouter(HomePage);
 
 
 

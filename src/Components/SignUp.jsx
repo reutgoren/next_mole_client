@@ -28,10 +28,10 @@ class SignUp extends Component {
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.checkLogin = this.checkLogin.bind(this);
-    
-    
+        this.checkLogin = this.checkLogin.bind(this);  
       }
+
+      
       handleEmailChange(event) {                //לוודא מה האירוע הנכון - און מאוס אאוט
         this.setState({ userEmail: event.target.value });
         fetch(this.api, {

@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 
 class FoundDataInFile extends Component {
     render() {
-        //console.log(this.props.data)
         return (
             <div>
 

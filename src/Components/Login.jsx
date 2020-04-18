@@ -3,7 +3,7 @@ import '../css/index.css';
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { withRouter, Router } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 
 //import FacebookLogin from 'react-facebook-login';
 //import GoogleLogin from 'react-google-login';
@@ -36,8 +36,8 @@ class Login extends Component {
 
   constructor(props) {
     super(props)
-    let local = false;
-    //let local = true
+    //let local = false;
+    let local = true
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -87,7 +87,7 @@ class Login extends Component {
     var emailStr =this.state.userEmail;
     var passwordStr=this.state.userPassword;
     let api= this.apiUrl+"user/"+emailStr+"/"+passwordStr;
-
+    console.log(api)
     fetch(api, {
       method: 'GET',
       headers: new Headers({
@@ -101,6 +101,7 @@ class Login extends Component {
       .then(result => {
         console.log(result);
         if (result) {
+          MySwal.fire("Login successfully ", "", "success",false)
           this.props.history.push("/home");
         }
         else {
@@ -108,7 +109,7 @@ class Login extends Component {
         }
       },
         (error) => {
-          console.log("err post=", error);
+          console.log("err=", error);
         });
     
 
@@ -135,18 +136,18 @@ class Login extends Component {
                   className="form-control" placeholder="Enter password" />
               </div>
 
-              <div className="form-group">
+              {/*<div className="form-group">
                 <div className="custom-control custom-checkbox">
                   <input type="checkbox" className="custom-control-input" id="customCheck1" />
                   <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
                 </div>
               </div>
-
+    */}
               <button type="submit" className="btn btn-info btn-block">Submit</button>
               <p className="forgot-password text-right">
                 <Link className="nav-link text-info" to="/sign-up">Not registered yet?</Link>
               </p>
-              <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+    {/*<StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />*/}
 
             </form>
           </div>

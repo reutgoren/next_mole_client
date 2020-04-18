@@ -1,51 +1,61 @@
 import React, { Component } from 'react';
-import { Graph } from "react-d3-graph";
+//import { Graph } from "react-d3-graph";
 import Data from "../gotData.json";
 //import { Dropdown, Container, Col, Row } from 'react-bootstrap';
-import { Button , Container, Row, Col} from 'react-bootstrap';
+import { Button, Container, Row, Col } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 //import ForceGraph3D from '3d-force-graph';
 import SpriteText from '3d-force-graph';
-import { ForceGraph2D, ForceGraphVR, ForceGraphAR } from 'react-force-graph';
-import * as THREE from 'three';
-import NewData from '../NewData.json';
+//import { ForceGraph2D, ForceGraphVR, ForceGraphAR } from 'react-force-graph';
+//import * as THREE from 'three';
+//import NewData from '../NewData.json';
 import FoundDataInFile from './FoundDataInFile';
-import SingleNode from './SingleNode';
+//import SingleNode from './SingleNode';
 //import PropTypes from 'prop-types';
 
 //import { json, keys } from 'd3';
 // graph payload (with minimalist structure)
 const data = {
-    nodes: [{ id: "Harry" , hobbey: 'football', "characterName": "Addam Marbrand",
-    "characterLink": "/character/ch0305333/",
-    "actorName": "B.J. Hogg",
-    "actorLink": "/name/nm0389698/"}, 
-    { id: "Sally", hobbey: 'ballet', "characterName": "Addam Marbrand",
-    "characterName": "Aegon Targaryen",
-    "houseName": "Targaryen",
-    "royal": true,
-    "parents": [
-        "Elia Martell",
-        "Rhaegar Targaryen"
-    ],
-    "siblings": [
-        "Rhaenys Targaryen",
-        "Jon Snow"
-    ],
-    "killedBy": [
-        "Gregor Clegane"
-    ]}, 
-    { id: "Alice", hobbey: 'dancing', "characterName": "Addam Marbrand",
-    "characterLink": "/character/ch0305333/",
-    "actorName": "B.J. Hogg",
-    "actorLink": "/name/nm0389698/" }, { id: 'Reut', hobbey: 'singing', "characterName": "Addam Marbrand",
-    "characterLink": "/character/ch0305333/",
-    "actorName": "B.J. Hogg",
-    "actorLink": "/name/nm0389698/" }, { id: 'Gal' , hobbey: 'basketball', "characterName": "Addam Marbrand",
-    "characterLink": "/character/ch0305333/",
-    "actorName": "B.J. Hogg",
-    "actorLink": "/name/nm0389698/"}],
+    nodes: [{
+        id: "Harry", hobbey: 'football', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    },
+    {
+        id: "Sally", hobbey: 'ballet', "characterName": "Addam Marbrand",
+        "characterName": "Aegon Targaryen",
+        "houseName": "Targaryen",
+        "royal": true,
+        "parents": [
+            "Elia Martell",
+            "Rhaegar Targaryen"
+        ],
+        "siblings": [
+            "Rhaenys Targaryen",
+            "Jon Snow"
+        ],
+        "killedBy": [
+            "Gregor Clegane"
+        ]
+    },
+    {
+        id: "Alice", hobbey: 'dancing', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }, {
+        id: 'Reut', hobbey: 'singing', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }, {
+        id: 'Gal', hobbey: 'basketball', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }],
     links: [{ source: "Harry", target: "Sally" }, { source: "Harry", target: "Alice" }, { source: "Reut", target: "Sally" }, { source: "Reut", target: "Gal" }, { source: "Reut", target: "Harry" }],
 };
 const data__ = {
@@ -136,14 +146,18 @@ Object.keys(Data).forEach(function (k, i) {
 var finalJson = { nodes: [], links: [] }
 var removedLinks = [] // הגדרת מערך ששומר את הקשרים שהוסרו
 
+
+
+
 class GraphEx extends Component {
     constructor(props) {
         super(props)
-        let local = false;
-        //this.apiUrl = 'http://localhost:44361/api/';
-        //if (!local) {
-        //this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/proj/api/';
-        // }
+        //let local = false;
+        let local = true;
+        this.apiUrl = 'https://localhost:44312/api/';
+        if (!local) {
+            this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
+        }
 
         this.state = {
             Relationship: "",
@@ -157,19 +171,23 @@ class GraphEx extends Component {
             idFoundOnJson: '',
             //jsonData: this.props.location.state.jsonData
         }
-    }
-    IDfunction = (item) => {
-        this.setState({
-            ItemId: item.target.value
-        })
-    }
 
-    RelationshipFunc = (item) => {
-        console.log(item.target.value);
-        this.setState({
-            Relationship: item.target.value
-        })
+
     }
+    /*
+        IDfunction = (item) => {
+            this.setState({
+                ItemId: item.target.value
+            })
+        }
+    
+        RelationshipFunc = (item) => {
+            console.log(item.target.value);
+            this.setState({
+                Relationship: item.target.value
+            })
+        }
+        */
     /*
         titleChange = (item) => {
             var a = [];
@@ -227,36 +245,36 @@ class GraphEx extends Component {
         console.log(data__);
     }
     */
-
-    saveToDB = () => {
-        this.setState({
-            titleRelationship: this.state.Relationship
-        })
-        let connection = this.state.Relationship;
-        let key = this.state.ItemId
-        console.log(connection);
-        Object.keys(Data).forEach(function (k, i) {
-            const values = Object.keys(Data[k])
-            values.map((i) => {
-                if (connection === i) {
-                    const v = Object.keys(Data[k][i])
-                    v.map((z) => {
-                        console.log(Data[k][i][z])
-                        console.log(Data[k][key])
-                        data__.links.push({ "source": Data[k][key], "target": Data[k][i][z] })
-                    });
-                }
+    /*
+        saveToDB = () => {
+            this.setState({
+                titleRelationship: this.state.Relationship
+            })
+            let connection = this.state.Relationship;
+            let key = this.state.ItemId
+            console.log(connection);
+            Object.keys(Data).forEach(function (k, i) {
+                const values = Object.keys(Data[k])
+                values.map((i) => {
+                    if (connection === i) {
+                        const v = Object.keys(Data[k][i])
+                        v.map((z) => {
+                            console.log(Data[k][i][z])
+                            console.log(Data[k][key])
+                            data__.links.push({ "source": Data[k][key], "target": Data[k][i][z] })
+                        });
+                    }
+                });
             });
-        });
-        this.setState({
-            graphData: data__
-        })
-        console.log(data__);
-    }
+            this.setState({
+                graphData: data__
+            })
+            console.log(data__);
+        }
+    */
+    postJsonToDB = (file) => {
 
-    postJsonToDB=(file) => {
-       
-        var api= 'https://localhost:44312/api/nodes';
+        var api = 'https://localhost:44312/api/nodes';
         //var api= 'http://localhost:44312/api/node';
         console.log(file);
         /*const nodeToPost = {
@@ -271,30 +289,56 @@ class GraphEx extends Component {
             
         };
         */
-        const nodesList= file.nodes.map(item=>{
-            let str= JSON.stringify(item)
-            let strW= str.replace(/'/g, "");
-            let id= item.id;
-            let idW= id.replace(/'/g, "");
-            var singleNode={
+        const nodesList = file.nodes.map(item => {
+            let str = JSON.stringify(item)
+            let strW = str.replace(/'/g, "");
+            let id = item.id;
+            let idW = id.replace(/'/g, "");
+            var singleNode = {
                 NodeNum: idW,
                 NodeDescription: strW
             }
             return singleNode;
         })
-        //nodesList.splice(0,380)
-        //nodesList.forEach(element => {
-          //  element.NodeDescription.replace('{', '');
-        //});
+        const linksList = file.links.map(item => {
+            let sour = item.source.id;
+            let sourW = sour.replace(/'/g, "");
+            let targ = item.target.id;
+            let targW =targ.replace(/'/g, "");
+            var singleLink = {
+                SourceNode: sourW,
+                TargetNode: targW,
+                ConnectionType: item.connectionType,
+                ConnectionWeight: 1
 
-        //const response = await fetch('https://localhost:44312/api/node/3');
-        //const res = await response.json();
-        //console.log(res);
-
-        fetch(api , {
+            }
+            return singleLink;
+        })
+        console.log(linksList)
+        //fetch(api, {
+        fetch(this.apiUrl + 'nodes', {        //POST nodes
             method: 'POST',
             body: JSON.stringify(nodesList),
             //mode: 'no-cors',
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+            })
+        })
+            .then(res => {
+                console.log('res=', res);
+                return res.json()
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
+
+        fetch(this.apiUrl + 'links', {         //POST links
+            method: 'POST',
+            body: JSON.stringify(linksList),
             headers: new Headers({
                 'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
             })
@@ -626,55 +670,55 @@ class GraphEx extends Component {
         console.log(finalJson)
         return (
             <div>
-<Container>
-    <Row><br/></Row>
-    <Row><br/></Row>
-    <Row>
-        <Col xs={12}>    
-        <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} connections={arrConnectionType} />
+                <Container>
+                    <Row><br /></Row>
+                    <Row><br /></Row>
+                    <Row>
+                        <Col xs={12}>
+                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} connections={arrConnectionType} />
 
-        </Col>
+                        </Col>
 
-    </Row>
-    <Row>
-        <Col>    
-        <Button variant="outline-info" onClick={() => this.postJsonToDB(finalJson)}>Save To DB</Button>
-        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button variant="btn btn-info " onClick={() => this.postJsonToDB(finalJson)}>Save network to DB</Button>
+                        </Col>
 
-    </Row>
-    <Row>
-        <Col xs={12}>
-       <ForceGraph3D
-                    graphData={finalJson}
-                    nodeLabel="id"
-                    linkLabel="connectionType"
-                   // nodeLabel={node => {
-                        // extend link with text sprite
-                        //const sprite = new SpriteText(`${node.source} > ${node.target}`);
-                        //sprite.color = 'lightgrey';
-                        //sprite.textHeight = 1.5;
-                       // return sprite;
-                    //  }}
-                    nodeAutoColorBy="id"
-                    linkThreeObjectExtend={true}
-                  //  linkThreeObject={link => {
-                        // extend link with text sprite
-                      //  const sprite = new SpriteText(`${link.source} > ${link.target}`);
-                       // sprite.color = 'lightgrey';
-                        //sprite.textHeight = 1.5;
-                     //   return sprite;
-                  //    }}
-                    showNavInfo={false}
-                    backgroundColor="rgb(164, 184, 204)"
-                    linkWidth={2}
-                //linkDirectionalParticles="value"
-                //linkDirectionalParticleSpeed={d => d.value * 0.001}
-                />
-     
-        </Col>
-  
-    </Row>
-                {/*
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            <ForceGraph3D
+                                graphData={finalJson}
+                                nodeLabel="id"
+                                linkLabel="connectionType"
+                                // nodeLabel={node => {
+                                // extend link with text sprite
+                                //const sprite = new SpriteText(`${node.source} > ${node.target}`);
+                                //sprite.color = 'lightgrey';
+                                //sprite.textHeight = 1.5;
+                                // return sprite;
+                                //  }}
+                                nodeAutoColorBy="id"
+                                linkThreeObjectExtend={true}
+                                //  linkThreeObject={link => {
+                                // extend link with text sprite
+                                //  const sprite = new SpriteText(`${link.source} > ${link.target}`);
+                                // sprite.color = 'lightgrey';
+                                //sprite.textHeight = 1.5;
+                                //   return sprite;
+                                //    }}
+                                showNavInfo={false}
+                                backgroundColor="rgb(164, 184, 204)"
+                                linkWidth={2}
+                            //linkDirectionalParticles="value"
+                            //linkDirectionalParticleSpeed={d => d.value * 0.001}
+                            />
+
+                        </Col>
+
+                    </Row>
+                    {/*
                 <ForceGraph3D
                     graphData={finalJson}
                     //nodeId={id}
@@ -686,9 +730,9 @@ class GraphEx extends Component {
                     linkWidth={2}
                 />
                 */}
-                
 
-</Container>
+
+                </Container>
 
                 {/*
                 <div>
@@ -726,7 +770,7 @@ class GraphEx extends Component {
                     linkWidth={2}
                 />*/}
 
-{/*
+                {/*
                 <Graph
                     id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                     data={this.state.graphData}
