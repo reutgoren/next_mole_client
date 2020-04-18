@@ -37,6 +37,7 @@ class Login extends Component {
   constructor(props) {
     super(props)
     let local = false;
+    //let local = true
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -49,7 +50,6 @@ class Login extends Component {
     this.handleEmailChange = this.handleEmailChange.bind(this);
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
     this.checkLogin = this.checkLogin.bind(this);
-
 
   }
 
@@ -84,15 +84,12 @@ class Login extends Component {
 
   checkLogin = (event) => {
     event.preventDefault();
-    const check = {
-      UserEmail: this.state.userEmail,
-      UserPassword: this.state.userPassword
-    }
+    var emailStr =this.state.userEmail;
+    var passwordStr=this.state.userPassword;
+    let api= this.apiUrl+"user/"+emailStr+"/"+passwordStr;
 
-    console.log(check)
-    fetch(this.apiUrl + 'user', {
+    fetch(api, {
       method: 'GET',
-      body: JSON.stringify(check),
       headers: new Headers({
         'Content-Type': 'application/json; charset=UTF-8',
       })
@@ -113,7 +110,7 @@ class Login extends Component {
         (error) => {
           console.log("err post=", error);
         });
-    console.log(this.state.usersLiked);
+    
 
   }
 
@@ -146,9 +143,8 @@ class Login extends Component {
               </div>
 
               <button type="submit" className="btn btn-info btn-block">Submit</button>
-              <p className="forgot-password text-right text-info">
-
-                <Link className="nav-link" to="/sign-up">Not registered yet?</Link>
+              <p className="forgot-password text-right">
+                <Link className="nav-link text-info" to="/sign-up">Not registered yet?</Link>
               </p>
               <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
 

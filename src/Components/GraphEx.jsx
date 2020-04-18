@@ -313,6 +313,7 @@ class GraphEx extends Component {
     }
 
     RemoveConnection = (x) => {
+        console.log(removedLinks, finalJson)
         if (!x.target.checked) {         //במידה והקשר הוסר 
             remove();
             function remove() {
@@ -643,9 +644,10 @@ class GraphEx extends Component {
     </Row>
     <Row>
         <Col xs={12}>
-     {/*   <ForceGraph3D
+       <ForceGraph3D
                     graphData={finalJson}
-                    //nodeLabel="id"
+                    nodeLabel="id"
+                    linkLabel="connectionType"
                    // nodeLabel={node => {
                         // extend link with text sprite
                         //const sprite = new SpriteText(`${node.source} > ${node.target}`);
@@ -668,7 +670,7 @@ class GraphEx extends Component {
                 //linkDirectionalParticles="value"
                 //linkDirectionalParticleSpeed={d => d.value * 0.001}
                 />
-     */}
+     
         </Col>
   
     </Row>
