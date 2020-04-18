@@ -9,7 +9,7 @@ export default class JsonUpload extends React.Component{
         fileContent:''
     }
 
-    AddPDF = (error, file)=>{
+    AddFile = (error, file)=>{
         if(this.fileValidate(file)){
             //this.props.sendJsonData(file);
 
@@ -24,8 +24,7 @@ export default class JsonUpload extends React.Component{
     fileValidate = (file)=>{
         let isValid = true;
         console.log(file.fileExtension)
-        //אם הקובץ לא קובץ ג'ייסון, לא לאפשר העלאה.
-        if (file.fileExtension!=='js') {
+        if (file.fileExtension!=='js'&file.fileExtension!=='json') {          //אם הקובץ לא קובץ ג'ייסון/גאווה סקריפט, לא לאפשר העלאה.
             alert("not a valid json/js file");
             file.abortLoad();
             isValid = false;
@@ -49,7 +48,7 @@ export default class JsonUpload extends React.Component{
     render(){
         return(
             <div style={divStyle}>
-                <FilePond allowMultiple={false} onaddfile={this.AddPDF} labelIdlE='FILE UPLOAD'/>
+                <FilePond allowMultiple={false} onaddfile={this.AddFile} labelIdlE='FILE UPLOAD'/>
                 {this.state.fileContent!==''&&<JSONTree data={this.state.fileContent} />}
             </div>
         )

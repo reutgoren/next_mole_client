@@ -1,22 +1,155 @@
 import React, { Component } from 'react';
-import { Graph } from "react-d3-graph";
+//import { Graph } from "react-d3-graph";
 import Data from "../gotData.json";
 //import { Dropdown, Container, Col, Row } from 'react-bootstrap';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 //import ForceGraph3D from '3d-force-graph';
-import SpriteText from '3d-force-graph';
-import { ForceGraph2D, ForceGraphVR, ForceGraphAR } from 'react-force-graph';
-import * as THREE from 'three';
-import NewData from '../NewData.json';
+//import SpriteText from '3d-force-graph';
+//import { ForceGraph2D, ForceGraphVR, ForceGraphAR } from 'react-force-graph';
+//import * as THREE from 'three';
+//import NewData from '../NewData.json';
 import FoundDataInFile from './FoundDataInFile';
-import SingleNode from './SingleNode';
+//import SingleNode from './SingleNode';
+//import PropTypes from 'prop-types';
 
+//import { json, keys } from 'd3';
+// graph payload (with minimalist structure)
+
+const data = {
+    nodes: [{
+        id: "Harry", hobbey: 'football', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    },
+    {
+        id: "Sally", hobbey: 'ballet', "characterName": "Addam Marbrand",
+        "characterName": "Aegon Targaryen",
+        "houseName": "Targaryen",
+        "royal": true,
+        "parents": [
+            "Elia Martell",
+            "Rhaegar Targaryen"
+        ],
+        "siblings": [
+            "Rhaenys Targaryen",
+            "Jon Snow"
+        ],
+        "killedBy": [
+            "Gregor Clegane"
+        ]
+    },
+    {
+        id: "Alice", hobbey: 'dancing', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }, {
+        id: 'Reut', hobbey: 'singing', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }, {
+        id: 'Gal', hobbey: 'basketball', "characterName": "Addam Marbrand",
+        "characterLink": "/character/ch0305333/",
+        "actorName": "B.J. Hogg",
+        "actorLink": "/name/nm0389698/"
+    }],
+    links: [{ source: "Harry", target: "Sally" }, { source: "Harry", target: "Alice" }, { source: "Reut", target: "Sally" }, { source: "Reut", target: "Gal" }, { source: "Reut", target: "Harry" }],
+};
+/*
+const data__ = {
+    nodes: [],
+    links: [],
+};
+const myConfig = {
+
+    nodeHighlightBehavior: true,
+    node: {
+        color: "lightgreen",
+        size: 120,
+        highlightStrokeColor: "blue",
+    },
+    link: {
+        highlightColor: "lightblue",
+    },
+};
+*/
+// graph event callbacks
+/*
+
+const onClickGraph = function () {
+    window.alert(`Clicked the graph background`);
+};
+
+const onClickNode = function (nodeId) {
+    window.alert(`Clicked node ${nodeId}`);
+};
+
+const onDoubleClickNode = function (nodeId) {
+    window.alert(`Double clicked node ${nodeId}`);
+};
+
+const onRightClickNode = function (event, nodeId) {
+    window.alert(`Right clicked node ${nodeId}`);
+};
+
+const onMouseOverNode = function (nodeId) {
+    console.log(`Mouse over node ${nodeId}`);
+
+};
+
+const onMouseOutNode = function (nodeId) {
+    console.log(`Mouse out node ${nodeId}`);
+
+};
+
+const onClickLink = function (source, target) {
+    window.alert(`Clicked link between ${source} and ${target}`);
+};
+
+const onRightClickLink = function (event, source, target) {
+    window.alert(`Right clicked link between ${source} and ${target}`);
+};
+
+const onMouseOverLink = function (source, target) {
+    console.log(`Mouse over in link between ${source} and ${target}`);
+
+};
+
+const onMouseOutLink = function (source, target) {
+    console.log(`Mouse out link between ${source} and ${target}`);
+
+};
+
+const onNodePositionChange = function (nodeId, x, y) {
+    window.alert(`Node ${nodeId} is moved to new position. New position is x= ${x} y= ${y}`);
+};
+*/
+
+/*
+var arr = []
+var arr2 = []
+var arr_temp_for_field = []
+var tot_items_in_array = 0;                        //מציאת כל השדות מכל האובייקטים
+Object.keys(Data).forEach(function (k, i) {
+    tot_items_in_array++;
+    const values = Object.keys(Data[k])
+    values.map((i) => {
+        arr_temp_for_field.push(i)
+    });
+});
+
+*/
+//const arrId= arrField.filter()
+//const apiUrl = 'http://localhost:44361/api/';
 var finalJson = { nodes: [], links: [] }
-var removedLinks = [] // הגדרת מערך ששומר את הקשרים שהוסרו
+var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
 
-class GraphEx extends Component {
+
+class Graph extends Component {
     constructor(props) {
         super(props)
         //let local = false;
@@ -27,7 +160,7 @@ class GraphEx extends Component {
         }
 
         this.state = {
-           /* Relationship: "",
+            Relationship: "",
             ItemId: "",
             titleID: "Selected ID Parameter",
             titleRelationship: "Choose Connection Type",
@@ -36,16 +169,114 @@ class GraphEx extends Component {
             finalFile: '',
             r: [],
             idFoundOnJson: '',
-            */
+            //jsonData: this.props.location.state.jsonData
         }
 
 
     }
+    /*
+        IDfunction = (item) => {
+            this.setState({
+                ItemId: item.target.value
+            })
+        }
     
+        RelationshipFunc = (item) => {
+            console.log(item.target.value);
+            this.setState({
+                Relationship: item.target.value
+            })
+        }
+        */
+    /*
+        titleChange = (item) => {
+            var a = [];
+            this.setState({
+                titleID: this.state.ItemId
+            })
+            var number = 0
+            Object.keys(Data).forEach(function (k, i) {         //מציאת כמו האיברים במערך
+                number += 1
+            });
+            this.state.NumOfrecord = number - 1;        //לא אמור לעבוד
+            let temp = this.state.ItemId;
+            Object.keys(Data).forEach(function (k, i) {
+                const values = Object.keys(Data[k])
+                values.map((i) => {
+                    if (temp === i) {
+                        a.push(Data[k][i])
+                    }
+                });
+            });
+            const uniqueNames = a.filter((val, id, array) => {
+                return array.indexOf(val) == id;
+            });
+            console.log(uniqueNames)
+            const doubleValue = uniqueNames.map((number) => {
+                data__.nodes.push({ "id": number })
+            });
+            console.log(data__)
+        }
+    
+    titleChange2 = (item) => {
+        this.setState({
+            titleRelationship: this.state.Relationship
+        })
+        let connection = this.state.Relationship;
+        let key = this.state.ItemId
+        console.log(connection);
+        Object.keys(Data).forEach(function (k) {
+            const values = Object.keys(Data[k])
+            values.map((i) => {
+                if (connection === i) {
+                    const v = Object.keys(Data[k][i])
+                    v.map((r, z) => {
+                        console.log(Data[k][i][z])
+                        console.log(Data[k][key])
+                        data__.links.push({ "source": Data[k][key], "target": Data[k][i][z] })
+                    });
+                    
+                }
+            });
+        });
+        this.setState({
+            graphData: data__
+        })
+        console.log(data__);
+    }
+    */
+    /*
+        saveToDB = () => {
+            this.setState({
+                titleRelationship: this.state.Relationship
+            })
+            let connection = this.state.Relationship;
+            let key = this.state.ItemId
+            console.log(connection);
+            Object.keys(Data).forEach(function (k, i) {
+                const values = Object.keys(Data[k])
+                values.map((i) => {
+                    if (connection === i) {
+                        const v = Object.keys(Data[k][i])
+                        v.map((z) => {
+                            console.log(Data[k][i][z])
+                            console.log(Data[k][key])
+                            data__.links.push({ "source": Data[k][key], "target": Data[k][i][z] })
+                        });
+                    }
+                });
+            });
+            this.setState({
+                graphData: data__
+            })
+            console.log(data__);
+        }
+    */
     postJsonToDB = (file) => {
 
         var api = 'https://localhost:44312/api/nodes';
-
+        //var api= 'http://localhost:44312/api/node';
+        console.log(file);
         const nodesList = file.nodes.map(item => {
             let str = JSON.stringify(item)
             let strW = str.replace(/'/g, "");
@@ -58,21 +289,27 @@ class GraphEx extends Component {
             return singleNode;
         })
         const linksList = file.links.map(item => {
+            let sour = item.source.id;
+            let sourW = sour.replace(/'/g, "");
+            let targ = item.target.id;
+            let targW =targ.replace(/'/g, "");
             var singleLink = {
-                SourceNode: item.source,
-                TargetNode: item.target,
+                SourceNode: sourW,
+                TargetNode: targW,
                 ConnectionType: item.connectionType,
                 ConnectionWeight: 1
-               
+
             }
             return singleLink;
         })
+        console.log(linksList)
         //fetch(api, {
-        fetch(this.apiUrl+'nodes', {        //POST nodes
+        fetch(this.apiUrl + 'nodes', {        //POST nodes
             method: 'POST',
             body: JSON.stringify(nodesList),
+            //mode: 'no-cors',
             headers: new Headers({
-                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+                'Content-type': 'application/json; charset=UTF-8' 
             })
         })
             .then(res => {
@@ -87,12 +324,11 @@ class GraphEx extends Component {
                     console.log("err post=", error);
                 });
 
-               
-        fetch(this.apiUrl+'links', {         //POST links
+        fetch(this.apiUrl + 'links', {              //POST links
             method: 'POST',
             body: JSON.stringify(linksList),
             headers: new Headers({
-                'Content-type': 'application/json; charset=UTF-8' //very important to add the 'charset=UTF-8'!!!!
+                'Content-type': 'application/json; charset=UTF-8' 
             })
         })
             .then(res => {
@@ -108,7 +344,7 @@ class GraphEx extends Component {
                 });
     }
 
-    RemoveConnection = (x) => {
+    RemoveConnection = (x) => {             //הסרת והחזרה סוג קשר   
         console.log(removedLinks, finalJson)
         if (!x.target.checked) {         //במידה והקשר הוסר 
             remove();
@@ -123,9 +359,11 @@ class GraphEx extends Component {
                 for (let k in finalJson.links) {
                     if (finalJson.links[k].connectionType === x.target.value) {
                         count++
+
                     };
 
                     if (count > 0) {
+
                         remove();
                     }
                 }
@@ -156,11 +394,26 @@ class GraphEx extends Component {
 
     render() {
 
+        // console.log(this.props.location.state.jsonData)
+        //const jsonData = this.props.location.state.jsonData;
+        const jsonData = Data;
         var arr_temp_for_field = [];
         var arr_length = 0;
         var arr_of_25_and_values = [];
         const ratio = [];
 
+        //מציאת מפתחות
+        /*
+        arr_fields= jsonData.map((item)=>{
+            Object.keys(jsonData[item])
+        })
+        arr_fields.push(Object.keys(jsonData));
+        console.log('keys '+arr_fields);
+ //מציאת ערכים
+ arr_values.push(Object.values(jsonData));
+ console.log('values '+arr_values);
+
+    */
         Object.keys(jsonData).forEach(function (k) {
             arr_length++;
             const values = Object.keys(jsonData[k])
@@ -204,40 +457,32 @@ class GraphEx extends Component {
                 t.push(test[z] + "****" + test[z + 1]);
             }
         })
-        //console.log(t);
         const arrClean = Array.from(new Set(t));            //מערך לאחר ניקוי ערכים כפולים
-        //console.log(arrClean);
         let s = ""
         arrClean.map((i) => {
             s += "****" + i
         })
-        //console.log(s);                 //כל המחרוזת עם כל המפתחות והשדות עם **** ביניהם
+        /*                                //כל המחרוזת עם כל המפתחות והשדות עם **** ביניהם
         const v = s.split("****");          //המרה לצורת מערך.... אבללל איפה משתמשים בו בכלל
-        //console.log(v);
-
+       
         jsonData.map((a, v) =>                 //מה עושה הקוד..??????
             arrField.map((l) => {
                 const z = Object.keys(jsonData[v])
-                //console.log(z);
                 z.map((u) => {
-                    if (u === l) {   //שניהם שדות כמו צ'ארקטר ניים
-                        //combine.push(z,z)
-                        //combine.push({l},{u})
-                        //arrtemp[u].push(a[u]);
-                        //tempArr.push(u,a[u])                      
+                    if (u === l) {   //שניהם שדות כמו צ'ארקטר ניים                
                     }
                 })
             })
         )
-
-        var arr = []            // מערך של כל המפתחות והערכים כולל כפולים
+*/
+        var arr = []       
         for (let i = 0; i < arrField.length; i++) {
             var y = {
                 k: arrField[i], v: []
             }
             arr.push(y)
         }
-        for (let r in Data) {
+        for (let r in Data) {                                    
             for (let j in arr) {
                 for (let u in arr[j]) {
                     if (typeof Data[r][arr[j][u]] === "object") {
@@ -253,7 +498,7 @@ class GraphEx extends Component {
                 }
             }
         }
-        var arrKeysAndRadio = [];           //מערך שמכיל את כל המפתחות כאשר אין ערכים כפולים
+        var arrKeysAndRadio = [];        //מערך של כל המפתחות והיחס שלהם
         for (let t in arr) {
             var TemparrremoveDuplicate = Array.from(new Set(arr[t].v));
             let objToAdd = {
@@ -262,9 +507,9 @@ class GraphEx extends Component {
             arrKeysAndRadio.push(objToAdd)
         }
 
-        var index = Data.length  // כמה רשמות יש לנו ב JSON
+        var index = Data.length                  // כמה רשמות יש לנו ב JSON
 
-        for (let z in arrKeysAndRadio) {             // הוספת ערך יחסי של כל מפתח
+        for (let z in arrKeysAndRadio) {                                // הוספת ערך יחסי של כל מפתח
             let calcRatio = (arrKeysAndRadio[z].v.length / index).toFixed(3);
             arrKeysAndRadio[z]["ratio"] = parseFloat(calcRatio)
         }
@@ -280,13 +525,14 @@ class GraphEx extends Component {
             }
             for (let z in arrKeysAndRadio) {
                 if (z !== '0') {
-                    for (let j in testt.v) {
+                    for (let j in testt.v) {           
                         for (let u in arrKeysAndRadio[z].v) {
-                            if (arrKeysAndRadio[z].v[u] === testt.v[j]) {
+                            if (arrKeysAndRadio[z].v[u] === testt.v[j]) {                  
                                 arrMultiConnectionType.push(arrKeysAndRadio[z].k);
                                 if (finalId !== testt.k) {
                                     finalId = testt.k;
                                 }
+
                             };
                         };
                     }
@@ -316,6 +562,8 @@ class GraphEx extends Component {
 
             var tmpArr = Data;                      // חיפוש לינקים במערך המקורי כאשר כלפעם נחסיר את הנוכחי
 
+            //const tmpArrForCheck = [...new Map(tmpArr.map(o => [o.id, o])).values()];   // ניקוי המערך עפ''י איידי שיהיה ללא כפולים - אם נרצה
+
             for (let item in tmpArr) {
                 var searchItem = tmpArr[item][finalId];
                 let itemToAddBack = tmpArr[item];
@@ -323,12 +571,10 @@ class GraphEx extends Component {
                 withoutCorrent.splice(item, 1);          //החסרה של הנוכחי
                 for (let i in withoutCorrent) {
                     for (let key in withoutCorrent[i]) {
-                        //console.log(key)
-                        if (key !== finalId && key !== 'id') {         //חיפוש בכל השדות מלבד בשדה איידי
+                        if (key !== finalId && key !== 'id') {                   //חיפוש בכל השדות מלבד בשדה איידי
                             if (typeof withoutCorrent[i][key] === 'object') {
                                 for (let j = 0; j < withoutCorrent[i][key].length; j++) {
                                     if (searchItem === withoutCorrent[i][key][j]) {
-                                        //console.log( withoutCorrent[i][finalId], ' is ',key, ' ' , searchItem)
                                         let newLink = { target: withoutCorrent[i][finalId], source: searchItem, connectionType: key }
                                         linksToAdd.push(newLink)                //בניית לינק
                                         for (let i in arrConnectionType) {
@@ -354,6 +600,7 @@ class GraphEx extends Component {
                                             arrConnectionType[i].amount = tmpAmount;
                                         }
                                     }
+
                                 }
                             }
                         }
@@ -361,6 +608,7 @@ class GraphEx extends Component {
                 }
                 withoutCorrent.splice(item, 0, itemToAddBack)         //החזרה של הנוכחי 
                 tmpArr = withoutCorrent;
+
             }
         }
 
@@ -375,12 +623,12 @@ class GraphEx extends Component {
                     <Row><br /></Row>
                     <Row>
                         <Col xs={12}>
-                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} connections={arrConnectionType} />
+                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} details={this.props.location.state} connections={arrConnectionType} />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <Button variant="outline-info" onClick={() => this.postJsonToDB(finalJson)}>Save To DB</Button>
+                            <Button variant="btn btn-info " onClick={() => this.postJsonToDB(finalJson)}>Save network to DB</Button>
                         </Col>
                     </Row>
                     <Row>
@@ -388,7 +636,7 @@ class GraphEx extends Component {
                             <ForceGraph3D
                                 graphData={finalJson}
                                 nodeLabel="id"
-                                linkLabel="connectionType"
+                                linkLabel="connectionType"                          
                                 nodeAutoColorBy="id"
                                 linkThreeObjectExtend={true}
                                 showNavInfo={false}
@@ -396,7 +644,7 @@ class GraphEx extends Component {
                                 linkWidth={2}
                             />
                         </Col>
-                    </Row>
+                    </Row>             
                 </Container>
             </div >
         )

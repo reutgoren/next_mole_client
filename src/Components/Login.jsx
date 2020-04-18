@@ -36,8 +36,8 @@ class Login extends Component {
 
   constructor(props) {
     super(props)
-    //let local = false;
-    let local = true
+    let local = false;
+    //let local = true
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -127,7 +127,7 @@ class Login extends Component {
               <div className="form-group">
                 <label>Email address</label>
                 <input type="email" name="userEmail" onChange={this.handleEmailChange}
-                  className="form-control" placeholder="Enter email" />
+                  className="form-control" placeholder="name@example.com" />
               </div>
 
               <div className="form-group">

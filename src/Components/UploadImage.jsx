@@ -54,7 +54,7 @@ class FileUpload extends React.Component {
     fileValidate = (file) => {
         console.log(file.fileExtension)
         let isValid = true;
-        //file.fileExtension זה בעצם הסיומת של הקובץ אם אתם רוצים להגביל את המשתמש לסוג קובץ מסוים תוסיפו תנאי
+        //file.fileExtension זה הסיומת של הקובץ
         if (file.fileExtension !== 'jpeg' && file.fileExtension !== 'png' && file.fileExtension !== 'jpg') {
             isValid = false;
         }

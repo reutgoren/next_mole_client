@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter, Router } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import '../css/index.css';
@@ -13,8 +13,8 @@ class SignUp extends Component {
 
     constructor(props) {
         super(props)
-        //let local = false;
-        let local = true
+        let local = false;
+        //let local = true
         this.apiUrl = 'https://localhost:44312/api/';
         if (!local) {
           this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -31,7 +31,7 @@ class SignUp extends Component {
         this.checkLogin = this.checkLogin.bind(this);  
       }
 
-      
+
       handleEmailChange(event) {                //לוודא מה האירוע הנכון - און מאוס אאוט
         this.setState({ userEmail: event.target.value });
         fetch(this.api, {

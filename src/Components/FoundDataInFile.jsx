@@ -6,9 +6,28 @@ class FoundDataInFile extends Component {
     render() {
         return (
             <div>
-
+<Card>
+<Card.Header>
+                            <Card.Title >Network Details</Card.Title>
+                            <Card.Subtitle className="text-left">
+                               Subject:
+                            </Card.Subtitle>
+                            <Card.Text className="text-left">{this.props.details.subject}</Card.Text>
+                            <Card.Subtitle className="text-left">
+                               Description:
+                            </Card.Subtitle>
+                            <Card.Text className="text-left">{this.props.details.description}</Card.Text>
+                           
+                            <Card.Subtitle>
+                               This is what we find in your JSON file
+                            </Card.Subtitle>
+                        </Card.Header>
+  <Card.Body>{this.props.details.rawData.length} nodes<br/>
+  {this.props.data.length} pottential to be Id<br/>
+  {this.props.connections.length} different connection types</Card.Body>
+</Card>
                 <CardDeck className="ml-5 mr-5 pb-5 pt-5">
-                    <Card>
+                    <Card style={{ width: '18rem' }}>
 
                         <Card.Header>
                             <Card.Title>Potential Id</Card.Title>
@@ -27,7 +46,7 @@ class FoundDataInFile extends Component {
                         </ListGroup>
 
                     </Card>
-                    <Card>
+                    <Card style={{ width: '18rem' }}>
                         <Card.Header>                            
                             <Card.Title>Connection Type</Card.Title>
                             <Card.Subtitle>

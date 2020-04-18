@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component,useState  } from 'react';
 //import './App.css';
 //import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -12,18 +12,12 @@ import Form from 'react-bootstrap/Form';
 //import { Jumbotron as Jumbo } from 'react-bootstrap';
 import styled from 'styled-components';
 import net1 from '../images/net1.png';
-
 import { withRouter } from 'react-router-dom';
-
-import Upload from '../Components/Upload.jsx';
-//import homecss from '../css/homecss.css'
-
-//import logo from '../images/logo.png';
+import UploadImage from './UploadImage.jsx';
 import logo2 from '../images/logo2.png';
 import Nav from '../Components/Nav';
+import UploadJson from './UploadJson';
 
-import JsonUpload from '../Components/JsonUpload';
-//import { color } from 'd3';
 
 
 const Styles = styled.div`
@@ -61,32 +55,45 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    //let local = false;
-    let local = true;
+    let local = false;
+    //let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
     }
+    this.state = {
+
+      jsonSubject: '',
+      jsonDescription: '',
+      jsonData: '',
+      jsonImage: '',
+  
+    }
   }
-
-
-  state = {
-
-    jsonSubject: '',
-    jsonDescription: '',
-    jsonData: '',
-    jsonImage: '',
-
-  }
-
+  /*
+  handleSubject = (event) => {
+    this.setState({ jsonSubject: event.target.value });
+    
+}
+handleDescription = (event) => {
+  this.setState({ jsonDescription: event.target.value });
+  
+}
+*/
+handleSubjectChange=(e)=>{
+  this.setState({ jsonSubject: e.target.value });
+    
+}
+handleDescriptionChange=(e)=>{
+  this.setState({ jsonDescription: e.target.value });
+    
+}
   getJsonData = (data) => {
     console.log("data from child to parent: " + data)
     this.setState({
       jsonData: JSON.parse(data)
     })
     console.log(this.state.jsonData)
-    //alert('homepage line 76 ' + this.state.jsonData)
-
   }
 
   getJsonImage = (data) => {
@@ -95,29 +102,36 @@ class HomePage extends Component {
       jsonImage: data
     })
     console.log(this.state.jsonImage)
-    alert('homepage line 86 ' + this.state.jsonImage)
   }
+  
 
   handleSubmit = (e) => {
-    let sub = e.target.elements.formSubject.value;
-    let des = e.target.elements.formDescription.value;
-    this.setState({
-      jsonSubject: sub,
-      jsonDescription: des
-    }, () => {
+    if(e.target.elements.formSubject.value===''){
+        alert('please fill subject')
+    }
+    else if(e.target.elements.formDescription.value===''){
+         alert('please fill description')
+    }
+    else if(this.state.jsonData===''){
+       alert('please upload data file')
+    }
+   else{
+    var jsonDetails={
+      subject: this.state.jsonSubject,
+      description: this.state.jsonDescription,
+      rawData: this.state.jsonData,
+      img: this.state.jsonImage
+    }
+   console.log(jsonDetails);
       this.props.history.push({
         pathname: '/graph',
         state: {
-          jsonSubject: this.state.jsonSubject,
-          jsonDescription: this.state.jsonDescription,
-          jsonData: this.state.jsonData,
-          jsonImage: this.state.jsonImage
+          jsonDetails:jsonDetails
         }
-      });
-    })
-
-    console.log(sub)                                //מציג טוב! את מה שאני צריכה
-
+      });       
+               
+   }
+         
   }
 
   render() {
@@ -138,7 +152,9 @@ class HomePage extends Component {
                 <Col xs={6} >
                   <Row style={{ marginTop: 30 }} ><Col style={{}} className="temp" md={6} xs={12}><img alt='' style={{ maxHeight: 140, maxWidth: 140 }} src={logo2} /></Col>
                     <Col style={{ paddingRight: 10, marginTop: 10 }} className="temp" xs={12} md={6}> <img alt='' style={{ zIndex: '100', Height: 120, maxWidth: 100 }} src={User} />
-                      <p>User Name</p></Col></Row>
+                      <p>User Name</p>
+                      </Col>
+                      </Row>
                 </Col>
               </Row>
             </div>
@@ -146,22 +162,21 @@ class HomePage extends Component {
         </Styles>
 
         <Container style={{ marginLeft: 0, marginTop: 30 }}>
-          <Form onSubmit={(e) => this.handleSubmit(e)}>
+          <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
               <Form.Label column sm="2">
                 Subject
-    </Form.Label>
+              </Form.Label>
               <Col sm="10">
-                <Form.Control name='subject' type="text" inputref={(ref) => { this.subject = ref }} placeholder="Add Subject" />
+                <Form.Control required name='subject' type="text" onChange={this.handleSubjectChange}  placeholder="Add subject" />
               </Col>
             </Form.Group>
-
             <Form.Group as={Row} controlId="formDescription">
               <Form.Label column sm="2">
                 Description
-    </Form.Label>
+               </Form.Label>
               <Col sm="10">
-                <Form.Control type="text" name='description' inputref={(ref) => { this.description = ref }} placeholder="Add description" />
+                <Form.Control required type="text" name='description' onChange={this.handleDescriptionChange} placeholder="Add description" />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="formPlaintextPassword">
@@ -169,29 +184,26 @@ class HomePage extends Component {
                 <Row>
                   <Form.Label column sm="4">
                     Data
-    </Form.Label>
+                  </Form.Label>
                   <Col sm="8">
-                    <JsonUpload sendJsonData={this.getJsonData} />
+                    <UploadJson sendJsonData={this.getJsonData} />
                   </Col>
                 </Row>
-
               </Col>
               <Col xs={6}>
                 <Row>
                   <Form.Label column sm="4">
                     Theme Image
-    </Form.Label>
+                   </Form.Label>
                   <Col sm="8">
-                    <Upload sendJsonImage={this.getJsonImage} />
+                    <UploadImage sendJsonImage={this.getJsonImage} />
                   </Col>
                 </Row>
-
               </Col>
-
             </Form.Group>
             <Row>
               <Col sx={12}>
-                <Button type="submit" className="bg-info" style={styleBTN} >Create</Button>
+                <Button type="submit" className="btn-info">Create network</Button>
               </Col>
             </Row>
           </Form>
