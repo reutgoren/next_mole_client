@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { withRouter, Router } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import '../css/index.css';
@@ -23,24 +23,30 @@ class SignUp extends Component {
           userEmail: '',
           userPassword: '',
           userName:'',
-          userBirthdate:'',
+          //userBirthdate:'',
           userGender:''
         }
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
-        this.checkLogin = this.checkLogin.bind(this);  
+        this.handleUserNameChange = this.handleUserNameChange.bind(this);
+        //this.handleBirthdateChange = this.handleBirthdateChange.bind(this);
+        this.handleGenderChange = this.handleGenderChange.bind(this);
+        this.signUser = this.signUser.bind(this);  
       }
-
+      handleEmailChange(event) {
+        this.setState({ userEmail: event.target.value });
+      }
       handlePasswordChange(event) {
         this.setState({ userPassword: event.target.value });
       }
       handleUserNameChange(event) {
         this.setState({ userName: event.target.value });
       }
-    
+    /*
       handleBirthdateChange(event) {
         this.setState({ userBirthdate: event.target.value });
       }
+      */
       handleGenderChange(event) {
         this.setState({ userGender: event.target.value });
       }
@@ -51,11 +57,11 @@ class SignUp extends Component {
             UserEmail: this.state.userEmail,
             UserPassword: this.state.userPassword,
             UserName: this.state.userName,
-            UserBirthdate: this.state.userBirthdate,
+            //UserBirthdate: this.state.userBirthdate,
             Gender: this.state.userGender
         }
 
-        fetch(this.apiUrl, {
+        fetch(this.apiUrl+'/user', {
           method: 'POST',
           body: JSON.stringify(userToPost),
           headers: new Headers({
@@ -84,29 +90,31 @@ class SignUp extends Component {
         return (
             <div className="auth-wrapper">
                 <div className="auth-inner">
-                    <form>
+                    <form onSubmit={this.signUser}>
                         <h3>Sign Up</h3>
                         <div className="form-group">
                             <label>Email address</label>
-                            <input type="email" className="form-control" placeholder="Enter email" />
+                            <input type="email" onChange={this.handleEmailChange} className="form-control" placeholder="Enter email" />
                         </div>
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" className="form-control" placeholder="Enter password" />
+                            <input type="password" onChange={this.handlePasswordChange} className="form-control" placeholder="Enter password" />
                         </div>
                         <div className="form-group">
                             <label>User name</label>
-                            <input type="text" className="form-control" placeholder="Enter user name" />
+                            <input type="text" onChange={this.handleUserNameChange} className="form-control" placeholder="Enter user name" />
                         </div>
+                        {/*
                         <div className="form-group">
                             <label>Date of birth</label>
-                            <input type="text" className="form-control" placeholder="Enter birthdate" />
+                            <input type="text" onChange={this.handleBirthdateChange} className="form-control" placeholder="Enter birthdate" />
                         </div>
+                        */}
                         <div className="form-group">
      
                             <label>Gender</label><br/>
-                            &nbsp;<input type="radio" name="gender" value="Male"  /> <label>Male</label><br/>
-                            &nbsp;<input type="radio" name="gender"  value="Female" /> <label>Female</label>
+                            &nbsp;<input type="radio" name="gender" value="Male" onChange={this.handleGenderChange} /> <label>Male</label><br/>
+                            &nbsp;<input type="radio" name="gender"  value="Female" onChange={this.handleGenderChange}/> <label>Female</label>
                         </div>
                         <button type="submit" className="btn btn-info btn-block">Sign Up</button>
                         <p className="forgot-password text-right">

@@ -5,22 +5,6 @@ import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
 
-/*
-var arr = []
-var arr2 = []
-var arr_temp_for_field = []
-var tot_items_in_array = 0;                        //מציאת כל השדות מכל האובייקטים
-Object.keys(Data).forEach(function (k, i) {
-    tot_items_in_array++;
-    const values = Object.keys(Data[k])
-    values.map((i) => {
-        arr_temp_for_field.push(i)
-    });
-});
-
-*/
-//const arrId= arrField.filter()
-//const apiUrl = 'http://localhost:44361/api/';
 var finalJson = { nodes: [], links: [] }
 var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
 
@@ -34,23 +18,6 @@ class GraphEx extends Component {
         if (!local) {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
         }
-
-        this.state = {
-            /*
-            Relationship: "",
-            ItemId: "",
-            titleID: "Selected ID Parameter",
-            titleRelationship: "Choose Connection Type",
-            NumOfrecord: 0,
-            graphData: data,
-            finalFile: '',
-            r: [],
-            idFoundOnJson: '',
-            //jsonData: this.props.location.state.jsonData
-            */
-        }
-
-
     }
  
     postJsonToDB = (file) => {                              //שמירה של צמתים וקשתות לדאטה בייס
@@ -240,17 +207,9 @@ class GraphEx extends Component {
             s += "****" + i
         })
         /*                                //כל המחרוזת עם כל המפתחות והשדות עם **** ביניהם
-        const v = s.split("****");          //המרה לצורת מערך.... אבללל איפה משתמשים בו בכלל
+        const v = s.split("****");          //המרה לצורת מערך.... 
        
-        jsonData.map((a, v) =>                 //מה עושה הקוד..??????
-            arrField.map((l) => {
-                const z = Object.keys(jsonData[v])
-                z.map((u) => {
-                    if (u === l) {   //שניהם שדות כמו צ'ארקטר ניים                
-                    }
-                })
-            })
-        )
+        
 */
         var arr = []       
         for (let i = 0; i < arrField.length; i++) {
@@ -406,12 +365,14 @@ class GraphEx extends Component {
                         </Col>
                     </Row>
                     <Row>
-                        <Col xs={8}>
+                        <Col xs={10}>
                             <ForceGraph3D
                                 graphData={finalJson}
                                 nodeLabel="id"
                                 linkLabel="connectionType"                          
                                 nodeAutoColorBy="id"
+                                nodeRelSize={8}
+                                width="1000px"
                                 linkThreeObjectExtend={true}
                                 showNavInfo={false}
                                 backgroundColor="rgb(164, 184, 204)"
