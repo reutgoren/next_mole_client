@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
-//import { Graph } from "react-d3-graph";
 import Data from "../gotData.json";
-//import { Dropdown, Container, Col, Row } from 'react-bootstrap';
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
-//import ForceGraph3D from '3d-force-graph';
-//import SpriteText from '3d-force-graph';
-//import { ForceGraph2D, ForceGraphVR, ForceGraphAR } from 'react-force-graph';
-//import * as THREE from 'three';
-//import NewData from '../NewData.json';
 import FoundDataInFile from './FoundDataInFile';
 //import SingleNode from './SingleNode';
 //import PropTypes from 'prop-types';
@@ -17,117 +10,6 @@ import FoundDataInFile from './FoundDataInFile';
 //import { json, keys } from 'd3';
 // graph payload (with minimalist structure)
 
-const data = {
-    nodes: [{
-        id: "Harry", hobbey: 'football', "characterName": "Addam Marbrand",
-        "characterLink": "/character/ch0305333/",
-        "actorName": "B.J. Hogg",
-        "actorLink": "/name/nm0389698/"
-    },
-    {
-        id: "Sally", hobbey: 'ballet', "characterName": "Addam Marbrand",
-        "characterName": "Aegon Targaryen",
-        "houseName": "Targaryen",
-        "royal": true,
-        "parents": [
-            "Elia Martell",
-            "Rhaegar Targaryen"
-        ],
-        "siblings": [
-            "Rhaenys Targaryen",
-            "Jon Snow"
-        ],
-        "killedBy": [
-            "Gregor Clegane"
-        ]
-    },
-    {
-        id: "Alice", hobbey: 'dancing', "characterName": "Addam Marbrand",
-        "characterLink": "/character/ch0305333/",
-        "actorName": "B.J. Hogg",
-        "actorLink": "/name/nm0389698/"
-    }, {
-        id: 'Reut', hobbey: 'singing', "characterName": "Addam Marbrand",
-        "characterLink": "/character/ch0305333/",
-        "actorName": "B.J. Hogg",
-        "actorLink": "/name/nm0389698/"
-    }, {
-        id: 'Gal', hobbey: 'basketball', "characterName": "Addam Marbrand",
-        "characterLink": "/character/ch0305333/",
-        "actorName": "B.J. Hogg",
-        "actorLink": "/name/nm0389698/"
-    }],
-    links: [{ source: "Harry", target: "Sally" }, { source: "Harry", target: "Alice" }, { source: "Reut", target: "Sally" }, { source: "Reut", target: "Gal" }, { source: "Reut", target: "Harry" }],
-};
-/*
-const data__ = {
-    nodes: [],
-    links: [],
-};
-const myConfig = {
-
-    nodeHighlightBehavior: true,
-    node: {
-        color: "lightgreen",
-        size: 120,
-        highlightStrokeColor: "blue",
-    },
-    link: {
-        highlightColor: "lightblue",
-    },
-};
-*/
-// graph event callbacks
-/*
-
-const onClickGraph = function () {
-    window.alert(`Clicked the graph background`);
-};
-
-const onClickNode = function (nodeId) {
-    window.alert(`Clicked node ${nodeId}`);
-};
-
-const onDoubleClickNode = function (nodeId) {
-    window.alert(`Double clicked node ${nodeId}`);
-};
-
-const onRightClickNode = function (event, nodeId) {
-    window.alert(`Right clicked node ${nodeId}`);
-};
-
-const onMouseOverNode = function (nodeId) {
-    console.log(`Mouse over node ${nodeId}`);
-
-};
-
-const onMouseOutNode = function (nodeId) {
-    console.log(`Mouse out node ${nodeId}`);
-
-};
-
-const onClickLink = function (source, target) {
-    window.alert(`Clicked link between ${source} and ${target}`);
-};
-
-const onRightClickLink = function (event, source, target) {
-    window.alert(`Right clicked link between ${source} and ${target}`);
-};
-
-const onMouseOverLink = function (source, target) {
-    console.log(`Mouse over in link between ${source} and ${target}`);
-
-};
-
-const onMouseOutLink = function (source, target) {
-    console.log(`Mouse out link between ${source} and ${target}`);
-
-};
-
-const onNodePositionChange = function (nodeId, x, y) {
-    window.alert(`Node ${nodeId} is moved to new position. New position is x= ${x} y= ${y}`);
-};
-*/
 
 /*
 var arr = []
@@ -143,13 +25,14 @@ Object.keys(Data).forEach(function (k, i) {
 });
 
 */
-//const arrId= arrField.filter()
-//const apiUrl = 'http://localhost:44361/api/';
+
 var finalJson = { nodes: [], links: [] }
 var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
 
 
 class Graph extends Component {
+
+    
     constructor(props) {
         super(props)
         //let local = false;
@@ -160,6 +43,7 @@ class Graph extends Component {
         }
 
         this.state = {
+            /*
             Relationship: "",
             ItemId: "",
             titleID: "Selected ID Parameter",
@@ -169,6 +53,7 @@ class Graph extends Component {
             finalFile: '',
             r: [],
             idFoundOnJson: '',
+            */
             //jsonData: this.props.location.state.jsonData
         }
 

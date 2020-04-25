@@ -1,4 +1,4 @@
-import React, { Component,useState  } from 'react';
+import React, { Component, useState } from 'react';
 //import './App.css';
 //import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 //import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -55,8 +55,8 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    let local = false;
-    //let local = true;
+    //let local = false;
+    let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -65,33 +65,24 @@ class HomePage extends Component {
 
       jsonSubject: '',
       jsonDescription: '',
-      jsonData: '',
+      jsonRowData: '',
       jsonImage: '',
-  
+
     }
   }
-  /*
-  handleSubject = (event) => {
-    this.setState({ jsonSubject: event.target.value });
-    
-}
-handleDescription = (event) => {
-  this.setState({ jsonDescription: event.target.value });
-  
-}
-*/
-handleSubjectChange=(e)=>{
-  this.setState({ jsonSubject: e.target.value });
-    
-}
-handleDescriptionChange=(e)=>{
-  this.setState({ jsonDescription: e.target.value });
-    
-}
+
+  handleSubjectChange = (e) => {
+    this.setState({ jsonSubject: e.target.value });
+
+  }
+  handleDescriptionChange = (e) => {
+    this.setState({ jsonDescription: e.target.value });
+
+  }
   getJsonData = (data) => {
-    console.log("data from child to parent: " + data)
+    //console.log("data from child to parent: " + data)
     this.setState({
-      jsonData: JSON.parse(data)
+      jsonRowData: JSON.parse(data)
     })
     console.log(this.state.jsonData)
   }
@@ -103,35 +94,40 @@ handleDescriptionChange=(e)=>{
     })
     console.log(this.state.jsonImage)
   }
-  
+
 
   handleSubmit = (e) => {
-    if(e.target.elements.formSubject.value===''){
-        alert('please fill subject')
+    localStorage.setItem('jsonRowData', JSON.stringify(this.state.jsonRowData));    //שמירה ללוקאל סטורג
+    console.log(e.target.elements.formSubject.value)
+    console.log(e.target.elements.formDescription.value)
+    /*
+    if (e.target.elements.formSubject.value === '') {
+      alert('please fill subject')
     }
-    else if(e.target.elements.formDescription.value===''){
-         alert('please fill description')
+    else if (e.target.elements.formDescription.value === '') {
+      alert('please fill description')
     }
-    else if(this.state.jsonData===''){
-       alert('please upload data file')
+    else if (this.state.jsonData === '') {
+      alert('please upload data file')
     }
-   else{
-    var jsonDetails={
-      subject: this.state.jsonSubject,
-      description: this.state.jsonDescription,
-      rawData: this.state.jsonData,
-      img: this.state.jsonImage
-    }
-   console.log(jsonDetails);
+    else {
+      */
+      var jsonDetails = {
+        subject: this.state.jsonSubject,
+        description: this.state.jsonDescription,
+        rawData: this.state.jsonRowData,
+        img: this.state.jsonImage
+      }
+      console.log(jsonDetails);
       this.props.history.push({
         pathname: '/graph',
         state: {
-          jsonDetails:jsonDetails
+          jsonDetails: jsonDetails
         }
-      });       
-               
-   }
-         
+      });
+
+    //}
+
   }
 
   render() {
@@ -153,22 +149,22 @@ handleDescriptionChange=(e)=>{
                   <Row style={{ marginTop: 30 }} ><Col style={{}} className="temp" md={6} xs={12}><img alt='' style={{ maxHeight: 140, maxWidth: 140 }} src={logo2} /></Col>
                     <Col style={{ paddingRight: 10, marginTop: 10 }} className="temp" xs={12} md={6}> <img alt='' style={{ zIndex: '100', Height: 120, maxWidth: 100 }} src={User} />
                       <p>User Name</p>
-                      </Col>
-                      </Row>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
             </div>
           </Container>
         </Styles>
 
-        <Container style={{ marginLeft: 0, marginTop: 30 }}>
+        <Container style={{  marginTop: 30 }}>
           <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
               <Form.Label column sm="2">
                 Subject
               </Form.Label>
               <Col sm="10">
-                <Form.Control required name='subject' type="text" onChange={this.handleSubjectChange}  placeholder="Add subject" />
+                <Form.Control required name='subject' type="text" onChange={this.handleSubjectChange} placeholder="Add subject" />
               </Col>
             </Form.Group>
             <Form.Group as={Row} controlId="formDescription">
@@ -201,7 +197,7 @@ handleDescriptionChange=(e)=>{
                 </Row>
               </Col>
             </Form.Group>
-            <Row>
+            <Row style={{marginTop: 30, marginBottom:30}}>
               <Col sx={12}>
                 <Button type="submit" className="btn-info">Create network</Button>
               </Col>

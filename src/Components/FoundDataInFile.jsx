@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, ListGroup, CardDeck, InputGroup, FormControl, Col } from 'react-bootstrap';
+import { Card, ListGroup, CardDeck, InputGroup, FormControl } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
 class FoundDataInFile extends Component {

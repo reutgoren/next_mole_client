@@ -4,7 +4,7 @@ import { Button, Container, Row, Col } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
-
+import gotData from '../gotData.json'
 var finalJson = { nodes: [], links: [] }
 var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
 
@@ -12,14 +12,17 @@ var removedLinks = []       // הגדרת מערך ששומר את הקשרים 
 class GraphEx extends Component {
     constructor(props) {
         super(props)
-        let local = false;
-        //let local = true;
+        //let local = false;
+        let local = true;
         this.apiUrl = 'https://localhost:44312/api/';
         if (!local) {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
         }
+        this.state = {
+            json: ''
+        }
     }
- 
+
     postJsonToDB = (file) => {                              //שמירה של צמתים וקשתות לדאטה בייס
         const nodesList = file.nodes.map(item => {
             let str = JSON.stringify(item)
@@ -36,7 +39,7 @@ class GraphEx extends Component {
             let sour = item.source.id;
             let sourW = sour.replace(/'/g, "");
             let targ = item.target.id;
-            let targW =targ.replace(/'/g, "");
+            let targW = targ.replace(/'/g, "");
             var singleLink = {
                 SourceNode: sourW,
                 TargetNode: targW,
@@ -52,7 +55,7 @@ class GraphEx extends Component {
             body: JSON.stringify(nodesList),
             //mode: 'no-cors',
             headers: new Headers({
-                'Content-type': 'application/json; charset=UTF-8' 
+                'Content-type': 'application/json; charset=UTF-8'
             })
         })
             .then(res => {
@@ -71,7 +74,7 @@ class GraphEx extends Component {
             method: 'POST',
             body: JSON.stringify(linksList),
             headers: new Headers({
-                'Content-type': 'application/json; charset=UTF-8' 
+                'Content-type': 'application/json; charset=UTF-8'
             })
         })
             .then(res => {
@@ -132,16 +135,148 @@ class GraphEx extends Component {
         console.log(removedLinks, finalJson)
     }
 
+    async componentDidMount() {
+        const dataFromLocal = JSON.parse(localStorage.getItem('jsonRowData'));
+        //const dataFromLocal = this.props.location.state.jsonDetails.rawData;
+        //this.setState({ json: dataFromLocal });
+        await this.setState({ json: dataFromLocal })
+
+        this.getKeys(dataFromLocal)
+        //console.log(dataFromLocal);
+        //console.log(this.props.location.state.jsonDetails.rawData)
+        //console.log(this.props.location.state.jsonDetails.subject)
+        //console.log(this.props.location.state.jsonDetails.description)
+        //console.log(this.props.location.state.jsonDetails.img)
+    }
+
+    getKeys = (rawArr) => {
+        let totalObj = rawArr.length;                 //כמות איברים כוללת, משתנה עזר לחישוב רשיו  
+        let arrAllKeys = [];                      //מערך של כ-ל המפתחות מכל איברי המערך גייסון כולל כפילויות
+        Object.keys(rawArr).forEach(function (k) {
+            const values = Object.keys(rawArr[k])
+            values.map((i) => {
+                arrAllKeys.push(i)
+            });
+        });
+        let arrDistinctKeys = Array.from(new Set(arrAllKeys));       //מערך של כל המפתחות ללא כפולים
+        this.countKeyRatio(arrDistinctKeys, arrAllKeys, totalObj)             //פונקציה שמוצאת כמות יחסית לכל מפתח
+    }
+
+    countKeyRatio = (arrDistinct, arrAll, totalObjCount) => {
+        const arrKeysAndRadio2 = [];
+        arrDistinct.map((i) => {
+            var search = i;
+            var countKey = arrAll.reduce(function (n, val) {        //פונקציה שסופרת כמה פעמים מופיע המפתח בסה"כ
+                return n + (val === search);
+            }, 0);
+            let keyRatio = parseFloat((countKey / totalObjCount).toFixed(3));                   //חלוקה בכמות האיברים הכוללת למציאת יחסיות
+            let objValues = this.addValues(i);
+            console.log(objValues)
+            let obj = {
+                k: i, v: objValues, amount: countKey, ratio: keyRatio
+            }
+           
+            arrKeysAndRadio2.push(obj)
+
+        });
+        arrKeysAndRadio2.sort(function (a, b) {           //מיון מערך מפתחות לפי סדר יורד של יחס כל מפתח
+            return b.ratio - a.ratio;
+        });
+        console.log(arrKeysAndRadio2)
+    }
+
+    addValues = (index) => {          //פונקציה שמביאה את כל הערכים מהשדות בכל איבר 
+        var val = [];
+        var arrTmp = this.state.json;
+        //console.log(arrTmp);
+        const sampleJSON = {
+            "arrOfNumbers": [1, 2, 3, 4],
+            "arrOfStrings": ["a", "b", "c", "d"],
+            "arrOfObjects": [{ "a": 1, "b": 1 }, { "a": 2, "b": 2 }, { "a": 3, "b": 3 }]
+          }
+          sampleJSON.arrOfObjects.map((item, i) => {
+              let r= item.a - item.b
+            console.log(r)
+          })
+        for(let g in arrTmp){
+            //let me= Object.keys(arrTmp[g])
+            
+            //console.log(arrTmp[g].index.valueOf())
+            //val.push(Object.values(arrTmp[g].index));     מביא אותיות
+            //val.push(Object.values(arrTmp[g]));    פשוט מביא את כל הערכים של האיבר
+            //val.push(Object.keys(arrTmp[g]))
+           // val.push(console.log(Object.values(arrTmp[index])))
+            //arrTmp[g].
+               // Object.keys(arrTmp[g]).map((key) => (       //ככה זה מביא הכל מאיבר גייסון בודד
+                   //val.push(arrTmp[g][key])
+                       //console.log(arrTmp[g][key])
+                   
+              //  ))
+              val.push(arrTmp[g].index)
+             // if (typeof arrTmp[g][index] === "object") {
+                //  console.log('im object')
+                //for (let z in arrTmp[g][index]) {
+                  //  arrDistinctt[j].v.push(arrTmp[r][arrDistinctt[j][u]][z]);
+                    //val.push(arrTmp[r][arrDistinctt[j][u]][z]);
+                //}
+           // }
+            //else {
+                //if (typeof arrTmp[r][arrDistinctt[j][u]] !== "undefined") {
+                  //  arrDistinctt[j].v.push(arrTmp[r][arrDistinctt[j][u]])
+                    //val.push(arrTmp[r][arrDistinctt[j][u]])
+
+                //}
+            //}
+
+        }
+        console.log(val)
+        /*
+       
+        for (let r in arrTmp) {
+            for (let j in arrDistinctt) {
+                for (let u in arrDistinctt[j]) {
+                    if (typeof arrTmp[r][arrDistinctt[j][u]] === "object") {
+                        for (let z in arrTmp[r][arrDistinctt[j][u]]) {
+                            arrDistinctt[j].v.push(arrTmp[r][arrDistinctt[j][u]][z]);
+                            //val.push(arrTmp[r][arrDistinctt[j][u]][z]);
+                        }
+                    }
+                    else {
+                        if (typeof arrTmp[r][arrDistinctt[j][u]] !== "undefined") {
+                            arrDistinctt[j].v.push(arrTmp[r][arrDistinctt[j][u]])
+                            //val.push(arrTmp[r][arrDistinctt[j][u]])
+
+                        }
+                    }
+                }
+            }
+        }
+        */
+        return val
+
+    }
+
+
     render() {
+        const nada=[];
+/*
+        for (let k = 0; k < Data.length; k++) {
+            Object.keys(sampleJSON2).map((key, i) => (       //ככה זה מביא הכל מאיבר גייסון בודד
+                                                                //המטרה לעשות את זה לכל איבר במערך      
+                nada.push(sampleJSON2[key])
+                
+            ))
 
-        console.log(this.props.location.state.jsonDetails.rawData)
-        console.log(this.props.location.state.jsonDetails.subject)
-        console.log(this.props.location.state.jsonDetails.description)
-        console.log(this.props.location.state.jsonDetails.img)
+        }
+        console.log(nada)
 
-        const Data= this.props.location.state.jsonDetails.rawData;
+*/
+
+        var arrLength = 0;  //כמות האיברים במערך שבחר המשתמש
+
+        const Data = this.props.location.state.jsonDetails.rawData;
         const jsonData = Data;
-        var arr_temp_for_field = [];
+        var arr_temp_for_field = [];  //מערך עם כ-ל השדות מפתח מכל האובייקטים בגייסון, עם כפילויות
         var arr_length = 0;
         var arr_of_25_and_values = [];
         const ratio = [];
@@ -158,6 +293,7 @@ class GraphEx extends Component {
  console.log('values '+arr_values);
 
     */
+
         Object.keys(jsonData).forEach(function (k) {
             arr_length++;
             const values = Object.keys(jsonData[k])
@@ -165,7 +301,6 @@ class GraphEx extends Component {
                 arr_temp_for_field.push(i)
             });
         });
-
         const arrField = Array.from(new Set(arr_temp_for_field));        //ניקוי שדות כפולים  
 
         arrField.map((i) => {
@@ -182,7 +317,6 @@ class GraphEx extends Component {
             })
             ratio.push(countRatio);
         });
-
         let str = "";
         jsonData.map((i, m) => {
             const values = Object.keys(jsonData[m])
@@ -211,14 +345,14 @@ class GraphEx extends Component {
        
         
 */
-        var arr = []       
+        var arr = []
         for (let i = 0; i < arrField.length; i++) {
             var y = {
                 k: arrField[i], v: []
             }
             arr.push(y)
         }
-        for (let r in Data) {                                    
+        for (let r in Data) {
             for (let j in arr) {
                 for (let u in arr[j]) {
                     if (typeof Data[r][arr[j][u]] === "object") {
@@ -250,7 +384,8 @@ class GraphEx extends Component {
             arrKeysAndRadio[z]["ratio"] = parseFloat(calcRatio)
         }
 
-        arrKeysAndRadio.sort(function (a, b) {           //מיון החלק היחסי של כל אחד
+
+        arrKeysAndRadio.sort(function (a, b) {           //מיון בסדר יורד לפי יחס שמצאנו לכל מפתח
             return b.ratio - a.ratio;
         });
         const arrMultiConnectionType = [];
@@ -261,9 +396,9 @@ class GraphEx extends Component {
             }
             for (let z in arrKeysAndRadio) {
                 if (z !== '0') {
-                    for (let j in testt.v) {           
+                    for (let j in testt.v) {
                         for (let u in arrKeysAndRadio[z].v) {
-                            if (arrKeysAndRadio[z].v[u] === testt.v[j]) {                  
+                            if (arrKeysAndRadio[z].v[u] === testt.v[j]) {
                                 arrMultiConnectionType.push(arrKeysAndRadio[z].k);
                                 if (finalId !== testt.k) {
                                     finalId = testt.k;
@@ -347,10 +482,91 @@ class GraphEx extends Component {
 
         finalJson.nodes = nodesToAdd;
         finalJson.links = linksToAdd;
-
-        console.log(finalJson)
+        /*const sampleJSON = {
+            "object": {
+              "name": "Pluralsight",
+              "number": 1,
+              "address": "India",
+              "website": "https://www.pluralsight.com/"
+            }
+          }*/
+        const sampleJSON = [{
+            "characterName": "Aegon Targaryen",
+            "houseName": "Targaryen",
+            "royal": true,
+            "parents": [
+                "Elia Martell",
+                "Rhaegar Targaryen"
+            ],
+            "siblings": [
+                "Rhaenys Targaryen",
+                "Jon Snow"
+            ],
+            "killedBy": [
+                "Gregor Clegane"
+            ]
+        }, {
+            "characterName": "Aeron Greyjoy",
+            "houseName": "Greyjoy",
+            "characterImageThumb": "https://images-na.ssl-images-amazon.com/images/M/MV5BNzI5MDg0ZDAtN2Y2ZC00MzU1LTgyYjQtNTBjYjEzODczZDVhXkEyXkFqcGdeQXVyNTg0Nzg4NTE@._V1._SX100_SY140_.jpg",
+            "characterImageFull": "https://images-na.ssl-images-amazon.com/images/M/MV5BNzI5MDg0ZDAtN2Y2ZC00MzU1LTgyYjQtNTBjYjEzODczZDVhXkEyXkFqcGdeQXVyNTg0Nzg4NTE@._V1_.jpg",
+            "characterLink": "/character/ch0540081/",
+            "actorName": "Michael Feast",
+            "actorLink": "/name/nm0269923/",
+            "siblings": [
+                "Balon Greyjoy",
+                "Euron Greyjoy"
+            ],
+            "nickname": "Damphair"
+        }];
+        /*
+                const shit= sampleJSON.map(a => {
+                    Object.keys(a).map(key => ( //ככה זה מביא הכל מאיבר גייסון בודד
+                        //המטרה לעשות את זה לכל איבר במערך   
+                        console.log('Key Name: ',key, 'Value: ', a[key])  
+                       
+                    ))
+                })
+                */
+        const sampleJSON2 = {
+            "characterName": "Aeron Greyjoy",
+            "houseName": "Greyjoy",
+            "characterImageThumb": "https://images-na.ssl-images-amazon.com/images/M/MV5BNzI5MDg0ZDAtN2Y2ZC00MzU1LTgyYjQtNTBjYjEzODczZDVhXkEyXkFqcGdeQXVyNTg0Nzg4NTE@._V1._SX100_SY140_.jpg",
+            "characterImageFull": "https://images-na.ssl-images-amazon.com/images/M/MV5BNzI5MDg0ZDAtN2Y2ZC00MzU1LTgyYjQtNTBjYjEzODczZDVhXkEyXkFqcGdeQXVyNTg0Nzg4NTE@._V1_.jpg",
+            "characterLink": "/character/ch0540081/",
+            "actorName": "Michael Feast",
+            "actorLink": "/name/nm0269923/",
+            "siblings": [
+                "Balon Greyjoy",
+                "Euron Greyjoy"
+            ],
+            "nickname": "Damphair"
+        }
+       
         return (
             <div>
+                {
+
+                    Object.keys(sampleJSON2).map((key) => (       //ככה זה מביא הכל מאיבר גייסון בודד
+                        <p>
+                            <span>Key Name: {key}</span>
+                            <span>Value: {sampleJSON2[key]}</span>
+                        </p>
+                    ))
+
+                    /*
+                   sampleJSON.map(a => {
+                       Object.keys(a).map(key => ( //ככה זה מביא הכל מאיבר גייסון בודד
+                           //המטרה לעשות את זה לכל איבר במערך     
+                           <p>
+                               <span>Key Name: {key}</span>
+                               <span>Value: {a[key]}</span>
+                           </p>
+                       ))
+                   })
+
+*/
+                }
                 <Container>
                     <Row><br /></Row>
                     <Row><br /></Row>
@@ -369,17 +585,17 @@ class GraphEx extends Component {
                             <ForceGraph3D
                                 graphData={finalJson}
                                 nodeLabel="id"
-                                linkLabel="connectionType"                          
+                                linkLabel="connectionType"
                                 nodeAutoColorBy="id"
                                 nodeRelSize={8}
-                                width="1000px"
+
                                 linkThreeObjectExtend={true}
                                 showNavInfo={false}
                                 backgroundColor="rgb(164, 184, 204)"
                                 linkWidth={2}
                             />
                         </Col>
-                    </Row>             
+                    </Row>
                 </Container>
             </div >
         )

@@ -13,8 +13,8 @@ class SignUp extends Component {
 
     constructor(props) {
         super(props)
-        let local = false;
-        //let local = true
+        //let local = false;
+        let local = true
         this.apiUrl = 'https://localhost:44312/api/';
         if (!local) {
           this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -33,12 +33,15 @@ class SignUp extends Component {
         this.handleGenderChange = this.handleGenderChange.bind(this);
         this.signUser = this.signUser.bind(this);  
       }
+
       handleEmailChange(event) {
         this.setState({ userEmail: event.target.value });
       }
+
       handlePasswordChange(event) {
         this.setState({ userPassword: event.target.value });
       }
+      
       handleUserNameChange(event) {
         this.setState({ userName: event.target.value });
       }
