@@ -51,7 +51,9 @@ class SignUp extends Component {
         this.setState({ userGender: event.target.value });
       }
             
-    signUser = (event) => {
+    signUser = (event) => {     //להוסיף ולידציה, שלא יהיה אפשר לאפשר את הטופס מבלי למלא את השדות כראוי
+
+
         event.preventDefault();
         const userToPost={
             UserEmail: this.state.userEmail,
