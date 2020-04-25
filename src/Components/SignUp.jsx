@@ -41,7 +41,7 @@ class SignUp extends Component {
       handlePasswordChange(event) {
         this.setState({ userPassword: event.target.value });
       }
-      
+
       handleUserNameChange(event) {
         this.setState({ userName: event.target.value });
       }
@@ -96,7 +96,7 @@ class SignUp extends Component {
             <div className="auth-wrapper">
                 <div className="auth-inner">
                     <form onSubmit={this.signUser}>
-                        <h3>Sign Up</h3>
+                        <h3>Create Account</h3>
                         <div className="form-group">
                             <label>Email address</label>
                             <input type="email" onChange={this.handleEmailChange} className="form-control" placeholder="Enter email" />

@@ -97,6 +97,7 @@ class HomePage extends Component {
 
 
   handleSubmit = (e) => {
+    e.preventDefault();
     localStorage.setItem('jsonRowData', JSON.stringify(this.state.jsonRowData));    //שמירה ללוקאל סטורג
     console.log(e.target.elements.formSubject.value)
     console.log(e.target.elements.formDescription.value)
@@ -197,7 +198,7 @@ class HomePage extends Component {
                 </Row>
               </Col>
             </Form.Group>
-            <Row style={{marginTop: 30, marginBottom:30}}>
+            <Row style={{padding: 100}}>
               <Col sx={12}>
                 <Button type="submit" className="btn-info">Create network</Button>
               </Col>
