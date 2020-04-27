@@ -80,27 +80,22 @@ class HomePage extends Component {
 
   }
   getJsonData = (data) => {
-    //console.log("data from child to parent: " + data)
     this.setState({
       jsonRowData: JSON.parse(data)
     })
-    console.log(this.state.jsonData)
+   
   }
 
   getJsonImage = (data) => {
-    console.log("image from chile to parent: " + data)
     this.setState({
       jsonImage: data
     })
-    console.log(this.state.jsonImage)
   }
 
 
   handleSubmit = (e) => {
-    localStorage.setItem('jsonRowData', JSON.stringify(this.state.jsonRowData));    //שמירה ללוקאל סטורג
-    console.log(e.target.elements.formSubject.value)
-    console.log(e.target.elements.formDescription.value)
-    /*
+    e.preventDefault();
+    localStorage.setItem('jsonRowData', JSON.stringify(this.state.jsonRowData));    // save the raw data from JSON to local storage
     if (e.target.elements.formSubject.value === '') {
       alert('please fill subject')
     }
@@ -111,13 +106,13 @@ class HomePage extends Component {
       alert('please upload data file')
     }
     else {
-      */
       var jsonDetails = {
         subject: this.state.jsonSubject,
         description: this.state.jsonDescription,
         rawData: this.state.jsonRowData,
         img: this.state.jsonImage
       }
+      localStorage.setItem('jsonDetails', JSON.stringify(jsonDetails));    // save all details to local storage
       console.log(jsonDetails);
       this.props.history.push({
         pathname: '/graph',
@@ -125,8 +120,7 @@ class HomePage extends Component {
           jsonDetails: jsonDetails
         }
       });
-
-    //}
+    }
 
   }
 
@@ -197,7 +191,7 @@ class HomePage extends Component {
                 </Row>
               </Col>
             </Form.Group>
-            <Row style={{marginTop: 30, marginBottom:30}}>
+            <Row style={{padding: 100}}>
               <Col sx={12}>
                 <Button type="submit" className="btn-info">Create network</Button>
               </Col>

@@ -19,18 +19,17 @@ class FoundDataInFile extends Component {
                             Description:
                             </Card.Subtitle>
                         <Card.Text className="text-left">{this.props.details.description}</Card.Text>
-
-                        <Card.Subtitle>
-                            This is what we find in your JSON file
-                            </Card.Subtitle>
                     </Card.Header>
-                    <Card.Body>total of {this.props.details.rawData.length} nodes<br />
+                    <Card.Body className="text-left">
+                    <Card.Subtitle>
+                            This is what we find in your JSON file :
+                            </Card.Subtitle>
+                            total of {this.props.details.rawData.length} nodes<br />
                         {this.props.data.length} keys pottential to be Id<br />
                         {this.props.connections.length} different connection types</Card.Body>
                 </Card>
                 <CardDeck className="ml-5 mr-5 pb-5 pt-5">
                     <Card style={{ width: '18rem' }}>
-
                         <Card.Header>
                             <Card.Title>Potential Id</Card.Title>
                             <Card.Subtitle>
@@ -40,7 +39,6 @@ class FoundDataInFile extends Component {
                         <ListGroup variant="flush">
                             {
                                 Object.values(this.props.data).map((item, i) => {
-                                    //let max= Math.max(item.v.length);
                                     return (
                                         <ListGroup.Item key={i} className='text-left'> <b>{item.k}</b> apears <b>{item.v.length}</b> times, ratio is: <b>{item.ratio}</b></ListGroup.Item>
                                     )
@@ -55,7 +53,7 @@ class FoundDataInFile extends Component {
                             <Card.Subtitle>
                                 List of the connections we found are:
                             </Card.Subtitle>
-                            <Card.Text>you can uncheck by choise</Card.Text>
+                            <Card.Text>you can uncheck connection type and see what happend</Card.Text>
                         </Card.Header>
                         {
                             this.props.connections.map((item, i) => {

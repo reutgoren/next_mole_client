@@ -24,7 +24,6 @@ class SignUp extends Component {
           userEmail: '',
           userPassword: '',
           userName:'',
-          //userBirthdate:'',
           userGender:null,
           validation:'True'
 
@@ -32,7 +31,6 @@ class SignUp extends Component {
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleUserNameChange = this.handleUserNameChange.bind(this);
-        //this.handleBirthdateChange = this.handleBirthdateChange.bind(this);
         this.handleGenderChange = this.handleGenderChange.bind(this);
         this.signUser = this.signUser.bind(this);  
       }
@@ -44,20 +42,15 @@ class SignUp extends Component {
       handlePasswordChange(event) {
         this.setState({ userPassword: event.target.value });
       }
-      
+
       handleUserNameChange(event) {
         this.setState({ userName: event.target.value });
       }
-    /*
-      handleBirthdateChange(event) {
-        this.setState({ userBirthdate: event.target.value });
-      }
-      */
       handleGenderChange(event) {
         this.setState({ userGender: event.target.value });
       }
             
-    signUser = (event) => {     //להוסיף ולידציה, שלא יהיה אפשר לאפשר את הטופס מבלי למלא את השדות כראוי
+    signUser = (event) => {   
       
       var counter=0;
       if (/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}$/i.test(this.state.userEmail)) {    
@@ -91,7 +84,6 @@ class SignUp extends Component {
             UserEmail: this.state.userEmail,
             UserPassword: this.state.userPassword,
             UserName: this.state.userName,
-            //UserBirthdate: this.state.userBirthdate,
             Gender: this.state.userGender
         }
 
@@ -126,7 +118,7 @@ class SignUp extends Component {
             <div className="auth-wrapper">
                 <div className="auth-inner">
                     <form onSubmit={this.signUser}>
-                        <h3>Sign Up</h3>
+                        <h3>Create Account</h3>
                         <div className="form-group">
                             <label>Email address</label>
                             <input type="email" onChange={this.handleEmailChange} className="form-control" placeholder="Enter email" />
@@ -139,12 +131,6 @@ class SignUp extends Component {
                             <label>User name</label>
                             <input type="text" onChange={this.handleUserNameChange} className="form-control" placeholder="Full Name" />
                         </div>
-                        {/*
-                        <div className="form-group">
-                            <label>Date of birth</label>
-                            <input type="text" onChange={this.handleBirthdateChange} className="form-control" placeholder="Enter birthdate" />
-                        </div>
-                        */}
                         <div className="form-group">
      
                             <label>Gender</label><br/>
