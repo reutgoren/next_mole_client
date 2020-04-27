@@ -16,10 +16,7 @@ class FileUpload extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            // Set initial files, type 'local' means this is a file
-            // that has already been uploaded to the server (see docs)
             files: [{
                 source: 'photo.jpeg',
                 options: {
@@ -30,26 +27,13 @@ class FileUpload extends React.Component {
     }
 
 
-
-
-
     AddPDF = (error, file) => {
         console.log(file)
         if (this.fileValidate(file)) {
-            //this.props.sendJsonImage(file);
-            console.log(file)
-            console.log(file.file)
-
-            // קריאת התוכן של הקובץ:
+            // read file
             this.readJsonImage(file.file);
-
-            //אם הקובץ שעלה עומד בתנאים עכשיו ניתן להעלות אותו לסרבר
-            //save to DB
-            // this.saveToDB(file);
         }
     }
-
-
 
     fileValidate = (file) => {
         console.log(file.fileExtension)
@@ -74,25 +58,19 @@ class FileUpload extends React.Component {
     readJsonImage = (file) => {
         var reader = new FileReader();
         reader.readAsDataURL(file, "UTF-8");
-        //reader.readAsDataURL(file, {type: 'text/plain'});
-
         reader.onload = (evt) => {
             console.log(evt.target.result);
             this.props.sendJsonImage(evt.target.result);
-            //this.setState({fileContent:JSON.parse(evt.target.result)})
         }
         reader.onerror = (evt) => {
             console.log("error reading file");
         }
     }
 
-
     saveToDB = (file) => {
         console.log(file.file);
-
         const data = new FormData();
         data.append("UploadedFile", file.file);
-        //גישה לקונטרולר
         fetch('http://localhost:50104/api/uploadPic', {
             method: 'post',
             contentType: false,
@@ -106,47 +84,22 @@ class FileUpload extends React.Component {
         });
     }
 
-    // saveToFirebaseStorage = (file)=>{
-    //     const groupData = JSON.parse(localStorage.getItem('groupData'));
-    //     const uploadPic = storage.ref('images/'+groupData.GroupName+'/ProjectDocument/'+file.name).put(file);
-    //     uploadPic.on('state_changed',
-    //     (snapshot)=>{
-    //     },(error)=>{
-    //         console.log(error);
-    //     },
-    //     ()=>{
-    //         storage.ref('images/'+groupData.GroupName+'/ProjectDocument/'+file.name).getDownloadURL()
-    //         .then((url)=>{
-    //             this.props.savePDF(url);
-    //         })
-    //     })
-    // }
-
-
     handleInit() {
         console.log('FilePond instance has initialised', this.pond);
         let fil = this.pond;
         console.log(fil);
-
     }
-
-
 
     render() {
         return (
-            <div style={divStyle}>
+            <div>
                 <FilePond
                     allowMultiple={false} onaddfile={this.AddPDF} />
-
             </div>
         )
     }
 }
 export default withRouter(FileUpload); 
 
-const divStyle = {
-    //padding:'150px'
-
-}
 
 

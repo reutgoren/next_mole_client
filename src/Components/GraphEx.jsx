@@ -9,7 +9,7 @@ import gotData from '../gotData.json'
 
 //var finalJson = { nodes: [], links: [] };
 var finalJsonNetwork = { nodes: [], links: [] }
-var removedLinks = [] ;      // הגדרת מערך ששומר את הקשרים שהוסרו
+var removedLinks = [] ;      // save the connections that removed
 var arrConnections =[];
 var arrKeysAndRadio=[];
 var dataFromLocal=[];
@@ -19,8 +19,8 @@ var rawData=[];
 class GraphEx extends Component {
     constructor(props) {
         super(props)
-        //let local = false;
-        let local = true;
+        let local = false;
+        //let local = true;
         this.apiUrl = 'https://localhost:44312/api/';
         if (!local) {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -30,7 +30,7 @@ class GraphEx extends Component {
         }
     }
 
-    postJsonToDB = (file) => {                              //שמירה של צמתים וקשתות לדאטה בייס
+    postJsonToDB = (file) => {                              // save nodes and links to DB
         const nodesList = file.nodes.map(item => {
             let str = JSON.stringify(item)
             let strW = str.replace(/'/g, "");
@@ -177,7 +177,7 @@ class GraphEx extends Component {
                 return n + (val === search);
             }, 0);
             let objValuesTmp = this.addValues(i);
-            let objValues = Array.from(new Set(objValuesTmp));      // remove duplicates
+            let objValues = Array.from(new Set(objValuesTmp));      // remove duplicates values
             let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));                   //חלוקה בכמות האיברים הכוללת למציאת יחסיות
             let obj = {
                 k: i, v: objValues, amount: countKey, ratio: keyRatio

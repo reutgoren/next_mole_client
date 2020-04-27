@@ -1,9 +1,12 @@
+/*
 import React, { Component } from 'react';
 import Data from "../gotData.json";
 import { Button, Container, Row, Col } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
+*/
+
 //import SingleNode from './SingleNode';
 //import PropTypes from 'prop-types';
 
@@ -25,7 +28,7 @@ Object.keys(Data).forEach(function (k, i) {
 });
 
 */
-
+/*
 var finalJson = { nodes: [], links: [] }
 var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
 
@@ -43,7 +46,7 @@ class Graph extends Component {
         }
 
         this.state = {
-            /*
+            
             Relationship: "",
             ItemId: "",
             titleID: "Selected ID Parameter",
@@ -53,12 +56,14 @@ class Graph extends Component {
             finalFile: '',
             r: [],
             idFoundOnJson: '',
-            */
+            
             //jsonData: this.props.location.state.jsonData
         }
 
 
     }
+    */
+
     /*
         IDfunction = (item) => {
             this.setState({
@@ -157,6 +162,7 @@ class Graph extends Component {
             console.log(data__);
         }
     */
+   /*
     postJsonToDB = (file) => {
 
         var api = 'https://localhost:44312/api/nodes';
@@ -299,6 +305,8 @@ class Graph extends Component {
  console.log('values '+arr_values);
 
     */
+
+    /*
         Object.keys(jsonData).forEach(function (k) {
             arr_length++;
             const values = Object.keys(jsonData[k])
@@ -360,6 +368,7 @@ class Graph extends Component {
             })
         )
 */
+/*
         var arr = []       
         for (let i = 0; i < arrField.length; i++) {
             var y = {
@@ -537,3 +546,4 @@ class Graph extends Component {
 }
 
 export default withRouter(Graph); 
+*/

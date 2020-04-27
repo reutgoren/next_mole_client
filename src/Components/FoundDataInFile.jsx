@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 class FoundDataInFile extends Component {
 
     render() {
-
         return (
             <div>
                 <Card>
@@ -45,7 +44,6 @@ class FoundDataInFile extends Component {
                                 })
                             }
                         </ListGroup>
-
                     </Card>
                     <Card style={{ width: '18rem' }}>
                         <Card.Header>
@@ -67,7 +65,6 @@ class FoundDataInFile extends Component {
                                 )
                             })
                         }
-
                     </Card>
                 </CardDeck>
             </div>

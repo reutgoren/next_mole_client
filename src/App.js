@@ -9,7 +9,6 @@ import HomePage from "./Components/HomePage.jsx";
 import Login from "./Components/Login.jsx";
 import SignUp from "./Components/SignUp.jsx";
 import GraphEx from "./Components/GraphEx.jsx";
-import Graph from "./Components/Graph.jsx";
 
 
 function App() {
