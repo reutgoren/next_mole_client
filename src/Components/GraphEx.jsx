@@ -5,9 +5,15 @@ import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
 import gotData from '../gotData.json'
-import { pointRadial } from 'd3';
-var finalJson = { nodes: [], links: [] }
-var removedLinks = []       // הגדרת מערך ששומר את הקשרים שהוסרו
+
+
+//var finalJson = { nodes: [], links: [] };
+var finalJsonNetwork = { nodes: [], links: [] }
+var removedLinks = [] ;      // הגדרת מערך ששומר את הקשרים שהוסרו
+var arrConnections =[];
+var arrKeysAndRadio=[];
+var dataFromLocal=[];
+var rawData=[];
 
 
 class GraphEx extends Component {
@@ -20,7 +26,7 @@ class GraphEx extends Component {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
         }
         this.state = {
-            json: ''
+            finalJson: '',
         }
     }
 
@@ -91,20 +97,20 @@ class GraphEx extends Component {
                 });
     }
 
-    RemoveConnection = (x) => {             //הסרת והחזרה סוג קשר   
-        console.log(removedLinks, finalJson)
-        if (!x.target.checked) {         //במידה והקשר הוסר 
+    RemoveConnection = (x) => {             // add / remove connection type   
+        console.log(removedLinks, finalJsonNetwork)
+        if (!x.target.checked) {         //  if connection removed
             remove();
             function remove() {
-                for (let j in finalJson.links) {
-                    if (finalJson.links[j].connectionType === x.target.value) {
-                        removedLinks.push(finalJson.links[j]);
-                        finalJson.links.splice(j, 1);
+                for (let j in finalJsonNetwork.links) {
+                    if (finalJsonNetwork.links[j].connectionType === x.target.value) {
+                        removedLinks.push(finalJsonNetwork.links[j]);
+                        finalJsonNetwork.links.splice(j, 1);
                     }
                 }
                 let count = 0;
-                for (let k in finalJson.links) {
-                    if (finalJson.links[k].connectionType === x.target.value) {
+                for (let k in finalJsonNetwork.links) {
+                    if (finalJsonNetwork.links[k].connectionType === x.target.value) {
                         count++
                     };
                     if (count > 0) {
@@ -118,7 +124,7 @@ class GraphEx extends Component {
             function funclear() {
                 for (let k in removedLinks) {
                     if (removedLinks[k].connectionType === x.target.value) {
-                        finalJson.links.push(removedLinks[k]);
+                        finalJsonNetwork.links.push(removedLinks[k]);
                         removedLinks.splice(k, 1);
                     }
                 }
@@ -133,23 +139,19 @@ class GraphEx extends Component {
                 }
             }
         }
-        console.log(removedLinks, finalJson)
+        console.log(removedLinks, finalJsonNetwork);
+        this.setState({finalJson:finalJsonNetwork})
+        this.forceUpdate();
+
     }
 
-    async componentDidMount() {
-        const dataFromLocal = JSON.parse(localStorage.getItem('jsonRowData'));
-        //const dataFromLocal = this.props.location.state.jsonDetails.rawData;
-        //this.setState({ json: dataFromLocal });
-        await this.setState({ json: dataFromLocal })
-        const arrKeysAndRadio3 = this.getKeys(dataFromLocal)
-        //console.log(this.props.location.state.jsonDetails.rawData)
-        //console.log(this.props.location.state.jsonDetails.subject)
-        //console.log(this.props.location.state.jsonDetails.description)
-        //console.log(this.props.location.state.jsonDetails.img)
-        console.log(arrKeysAndRadio3)
-        const id= this.getId(arrKeysAndRadio3);
+     componentDidMount() {
+        arrKeysAndRadio = this.getKeys(rawData)
+        console.log(arrKeysAndRadio)
+        var id= this.getId(arrKeysAndRadio);
         if(id!==''){
-
+            this.getNodes(rawData, id);
+            this.getLinks(rawData, id, arrConnections);
         }
 
     }
@@ -187,13 +189,12 @@ class GraphEx extends Component {
         arrKeysAndRadio2.sort(function (a, b) {           //מיון מערך מפתחות לפי סדר יורד של יחס כל מפתח
             return b.ratio - a.ratio;
         });
-        console.log(arrKeysAndRadio2);
         return arrKeysAndRadio2
     }
 
     addValues = (index) => {          //פונקציה שמביאה את כל הערכים מהשדות בכל איבר 
         var val = [];
-        var arrTmp = this.state.json;
+        var arrTmp = rawData;
         for (let g in arrTmp) {
             if (arrTmp[g][index]) {                     //אם בכלל קיים שדה כזה
                 let type = typeof (arrTmp[g][index])
@@ -211,27 +212,22 @@ class GraphEx extends Component {
     }
 
     getId = (arrOfKeys) => {
-        console.log(arrOfKeys)
         let isId = false;
         var arrOfKeysTmp = arrOfKeys;
-        var maxRatioObj = arrOfKeysTmp.reduce((prev, current) => (prev.ratio > current.ratio) ? prev : current);  //מציאת האובייקט עם הרשיו הכי גבוה
-        var maxRatioIndex = arrOfKeys.findIndex(o => o.ratio === maxRatioObj.ratio);     //מציאת האינדקס של האובייקט
-        let potentialId = maxRatioObj.k;            //שדה פוטנציאלי להיות איידי
+        var maxRatioObj = arrOfKeysTmp.reduce((prev, current) => (prev.ratio > current.ratio) ? prev : current);  // get the object with maximun ratio
+        var maxRatioIndex = arrOfKeys.findIndex(o => o.ratio === maxRatioObj.ratio);     // find the object index 
+        let potentialId = maxRatioObj.k;            // potential key to be id
         let total=0;
         var arrOfKeysTmpCopy = arrOfKeysTmp;
         var arrCon=[];
-        maxRatioObj.v.map((itemToSearch) => {      //לחפש את אייטם בכל אחת מהv האחרים
+        maxRatioObj.v.map((itemToSearch) => {     
             var totalObjConnection=0;
             arrOfKeysTmpCopy.map((searchInto) => {
-                if (searchInto.k !== potentialId) {                      //לחפש בכולם חוץ מבשדה שחשוד להיות איידי
-                    //var count = searchInto.v.reduce(function(n, val) {
-                      //  return n + (val === itemToSearch);
-                    //}, 0);
+                if (searchInto.k !== potentialId) {                      // sreach in all other keys beside the potential
                     var count=this.countAppearence(itemToSearch, searchInto.v);
                     if(count!==0){                          
-                        //if(!arrConnectionType2.includes(searchInto.k)){            //בניית מערך של סוגי קשר
-                            arrCon.push(searchInto.k)
-                        //}
+                            arrCon.push(searchInto.k)    // build array of connection types, tmp
+                        
                     }
                     totalObjConnection+=count;
                     total+=count;             
@@ -250,7 +246,7 @@ class GraphEx extends Component {
             isId=true;
             alert(potentialId+' is the key that found uniqe')
         }
-        this.getConnections(arrCon)
+        arrConnections= this.getConnections(arrCon)
         return potentialId
     }
 
@@ -262,232 +258,97 @@ class GraphEx extends Component {
     }
 
      getConnections=(arr)=>{
-        const arrConnectionType2 = [];
-        const tmpArrConnectionType2 = Array.from(new Set(arr));           //מחיקת כפולים
-        for (let i = 0; i < tmpArrConnectionType2.length; i++) {                                   //המרה למערך של מפתח וערך
-            let count= this.countAppearence(tmpArrConnectionType2[i],arr)
+        var arrConnectionType2 = [];
+        var tmpArrConnectionType2 = Array.from(new Set(arr));           // remove duplicate
+        for (let i = 0; i < tmpArrConnectionType2.length; i++) {                                   // create array of key value pair
+            //let count= this.countAppearence(tmpArrConnectionType2[i],arr)
             let obj = {
                 name: tmpArrConnectionType2[i],
-                amount: count
+                amount: 0
             }
             arrConnectionType2.push(obj)
         }
         console.log(arrConnectionType2)
+        return arrConnectionType2;
      }
 
-    render() {
-        var arrLength = 0;  //כמות האיברים במערך שבחר המשתמש
-        const Data = this.props.location.state.jsonDetails.rawData;
-        const jsonData = Data;
-        var arr_temp_for_field = [];         //מערך עם כ-ל השדות מפתח מכל האובייקטים בגייסון, עם כפילויות
-        var arr_length = 0;
-        var arr_of_25_and_values = [];
-        const ratio = [];
-
-        //מציאת מפתחות
-        /*
-        arr_fields= jsonData.map((item)=>{
-            Object.keys(jsonData[item])
-        })
-        arr_fields.push(Object.keys(jsonData));
-        console.log('keys '+arr_fields);
- //מציאת ערכים
- arr_values.push(Object.values(jsonData));
- console.log('values '+arr_values);
-
-    */
-
-        Object.keys(jsonData).forEach(function (k) {
-            arr_length++;
-            const values = Object.keys(jsonData[k])
-            values.map((i) => {
-                arr_temp_for_field.push(i)
-            });
-        });
-        const arrField = Array.from(new Set(arr_temp_for_field));        //ניקוי שדות כפולים  
-
-        arrField.map((i) => {
-            var countRatio = 0
-            var obj = {
-                k: i, v: []
-            }
-
-            arr_of_25_and_values.push(obj);
-            arr_temp_for_field.map((z) => {
-                if (i === z) {
-                    countRatio++;
-                }
-            })
-            ratio.push(countRatio);
-        });
-        let str = "";
-        jsonData.map((i, m) => {
-            const values = Object.keys(jsonData[m])
-            values.map((x, c) => {
-                str += values[c].toString() + "*****" + Data[m][x].toString() + "*****";
-            })
-
-        })
-        var test = str.split("*****");
-
-        var count = 0;
-        var t = []
-        test.map((i, z) => {
-            count++;
-            if (count % 2 === 1) {
-                t.push(test[z] + "****" + test[z + 1]);
-            }
-        })
-        const arrClean = Array.from(new Set(t));            //מערך לאחר ניקוי ערכים כפולים
-        let s = ""
-        arrClean.map((i) => {
-            s += "****" + i
-        })
-        /*                                //כל המחרוזת עם כל המפתחות והשדות עם **** ביניהם
-        const v = s.split("****");          //המרה לצורת מערך.... 
-       
-        
-*/
-        var arr = []
-        for (let i = 0; i < arrField.length; i++) {
-            var y = {
-                k: arrField[i], v: []
-            }
-            arr.push(y)
+     getNodes=(arr, id)=>{
+        var nodesToAdd = [];
+        for (let item in arr) {
+            let newNode = arr[item];                        //create new node
+            newNode.id = arr[item][id];
+            nodesToAdd.push(newNode);
         }
-        for (let r in Data) {               //הבאת כל הערכים לכל מפתח
-            for (let j in arr) {
-                for (let u in arr[j]) {
-                    if (typeof Data[r][arr[j][u]] === "object") {
-                        for (let z in Data[r][arr[j][u]]) {
-                            arr[j].v.push(Data[r][arr[j][u]][z]);
-                        }
-                    }
-                    else {
-                        if (typeof Data[r][arr[j][u]] !== "undefined") {
-                            arr[j].v.push(Data[r][arr[j][u]])
-                        }
-                    }
-                }
-            }
-        }
+        finalJsonNetwork.nodes=nodesToAdd;
+        this.forceUpdate();
+        this.setState({finalJson: finalJsonNetwork})
+     }
 
-        var arrKeysAndRadio = [];        //מערך של כל המפתחות והיחס שלהם
-        for (let t in arr) {
-            var TemparrremoveDuplicate = Array.from(new Set(arr[t].v));
-            let objToAdd = {
-                k: arr[t].k, v: TemparrremoveDuplicate
-            }
-            arrKeysAndRadio.push(objToAdd)
-        }
-
-        var index = Data.length                  // כמה רשמות יש לנו ב JSON
-
-        for (let z in arrKeysAndRadio) {                                // הוספת ערך יחסי של כל מפתח
-            let calcRatio = (arrKeysAndRadio[z].v.length / index).toFixed(3);
-            arrKeysAndRadio[z]["ratio"] = parseFloat(calcRatio)
-        }
-
-
-        arrKeysAndRadio.sort(function (a, b) {           //מיון בסדר יורד לפי יחס שמצאנו לכל מפתח
-            return b.ratio - a.ratio;
-        });
-        //console.log(arrKeysAndRadio)
-
-        const arrMultiConnectionType = [];
-        var finalId = '';
-        for (let i in arrKeysAndRadio) {          //ווידוא שהשדה איידי אכן יכול לשמש באיידי
-            if (i === '0') {                                           //ומציאת סוגי קשרים פוטנציאלים
-                var testt = arrKeysAndRadio[i];
-            }
-            for (let z in arrKeysAndRadio) {
-                if (z !== '0') {
-                    for (let j in testt.v) {
-                        for (let u in arrKeysAndRadio[z].v) {
-                            if (arrKeysAndRadio[z].v[u] === testt.v[j]) {
-                                arrMultiConnectionType.push(arrKeysAndRadio[z].k);
-                                if (finalId !== testt.k) {
-                                    finalId = testt.k;
-                                }
-
-                            };
-                        };
-                    }
-                }
-            }
-        }
-
-        const tmpArrConnectionType = Array.from(new Set(arrMultiConnectionType));           //מחיקת כפולים
-        var arrConnectionType = [];
-        for (let i = 0; i < tmpArrConnectionType.length; i++) {                                   //המרה למערך של מפתח וערך
-            let obj = {
-                name: tmpArrConnectionType[i],
-                amount: 0
-            }
-            arrConnectionType.push(obj)
-        }
-console.log(arrConnectionType)
-        if (finalId !== '') {                         //אחרי שמצאנו איידי הולכים לבנות את המערך החדש
-            var nodesToAdd = [];
+     getLinks=(arr, id , arrConnections)=>{
             var linksToAdd = [];
-            for (let f in Data) {
-                let newNode = Data[f];                        //בניית נוד
-                newNode.id = Data[f][finalId];
-                nodesToAdd.push(newNode);
-
-            }
-
-            var tmpArr = Data;                      // חיפוש לינקים במערך המקורי כאשר כלפעם נחסיר את הנוכחי
-
+            var tmpArr = arr;                      // search links in the original array, every loop we dismiss the current
+           
             for (let item in tmpArr) {
-                var searchItem = tmpArr[item][finalId];
+                var searchedItem = tmpArr[item][id];
                 let itemToAddBack = tmpArr[item];
                 var withoutCorrent = tmpArr;
-                withoutCorrent.splice(item, 1);          //החסרה של הנוכחי
+                withoutCorrent.splice(item, 1);          // dismis the current
                 for (let i in withoutCorrent) {
                     for (let key in withoutCorrent[i]) {
-                        if (key !== finalId && key !== 'id') {                   //חיפוש בכל השדות מלבד בשדה איידי
+                        if (key !== id && key !== 'id') {                   // search all keys bedise 'id', beacuse it key we added
                             if (typeof withoutCorrent[i][key] === 'object') {
                                 for (let j = 0; j < withoutCorrent[i][key].length; j++) {
-                                    if (searchItem === withoutCorrent[i][key][j]) {
-                                        let newLink = { target: withoutCorrent[i][finalId], source: searchItem, connectionType: key }
-                                        linksToAdd.push(newLink)                //בניית לינק
-                                        for (let i in arrConnectionType) {
-                                            if (arrConnectionType[i].name === key) {
-                                                let tmpAmount = arrConnectionType[i].amount;
+                                    if (searchedItem === withoutCorrent[i][key][j]) {
+                                        let newLink = { target: withoutCorrent[i][id], source: searchedItem, connectionType: key }
+                                        linksToAdd.push(newLink)                //create new link
+                                        for (let i in arrConnections) {
+                                            if (arrConnections[i].name === key) {
+                                                let tmpAmount = arrConnections[i].amount;       // count amount of connection type
                                                 tmpAmount++;
-                                                arrConnectionType[i].amount = tmpAmount;
+                                                arrConnections[i].amount = tmpAmount;
                                             }
                                         }
                                     }
                                 }
                             }
                             else {
-                                console.log()
-                                if (searchItem === withoutCorrent[i][key]) {
-                                    let newLink = { source: withoutCorrent[i][finalId], target: searchItem, connectionType: key }
+                                if (searchedItem === withoutCorrent[i][key]) {
+                                    let newLink = { source: withoutCorrent[i][id], target: searchedItem, connectionType: key }
                                     linksToAdd.push(newLink);
-                                    for (let i in arrConnectionType) {
-                                        if (arrConnectionType[i].name === key) {
-                                            let tmpAmount = arrConnectionType[i].amount;
-                                            tmpAmount++;
-                                            console.log(tmpAmount);
-                                            arrConnectionType[i].amount = tmpAmount;
-                                        }
-                                    }
 
                                 }
                             }
                         }
                     }
                 }
-                withoutCorrent.splice(item, 0, itemToAddBack)         //החזרה של הנוכחי 
+                withoutCorrent.splice(item, 0, itemToAddBack)         // return back the current
                 tmpArr = withoutCorrent;
             }
-        }
+            finalJsonNetwork.links= linksToAdd;
+            console.log(finalJsonNetwork)
+            this.forceUpdate();
+            this.setState({finalJson: finalJsonNetwork})
 
-        finalJson.nodes = nodesToAdd;
-        finalJson.links = linksToAdd;
+     }
+
+    render() {
+        if(localStorage.getItem('jsonRowData')){
+            rawData = JSON.parse(localStorage.getItem('jsonRowData'));
+            
+       }
+       else{
+        rawData = this.props.location.state.jsonDetails.rawData;
+       }
+
+       if(localStorage.getItem('jsonDetails')){
+        dataFromLocal = JSON.parse(localStorage.getItem('jsonDetails'));    
+   }
+   else{
+    dataFromLocal = this.props.location.state.jsonDetails.rawData;
+
+   }
+        //rawData= this.props.location.state.jsonDetails.rawData;
+        console.log(rawData)
 
 
         return (
@@ -497,23 +358,22 @@ console.log(arrConnectionType)
                     <Row><br /></Row>
                     <Row>
                         <Col xs={12}>
-                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} details={this.props.location.state.jsonDetails} connections={arrConnectionType} />
+                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} details={dataFromLocal} connections={arrConnections} />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <Button variant="btn btn-info " onClick={() => this.postJsonToDB(finalJson)}>Save network to DB</Button>
+                            <Button variant="btn btn-info " onClick={() => this.postJsonToDB(finalJsonNetwork)}>Save network to DB</Button>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={10}>
                             <ForceGraph3D
-                                graphData={finalJson}
+                                graphData={finalJsonNetwork}
                                 nodeLabel="id"
                                 linkLabel="connectionType"
                                 nodeAutoColorBy="id"
                                 nodeRelSize={8}
-
                                 linkThreeObjectExtend={true}
                                 showNavInfo={false}
                                 backgroundColor="rgb(164, 184, 204)"
