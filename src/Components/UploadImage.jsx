@@ -5,7 +5,11 @@ import { withRouter } from 'react-router-dom';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
+
+const MySwal = withReactContent(Swal)
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
 class FileUpload extends React.Component {
@@ -55,8 +59,16 @@ class FileUpload extends React.Component {
         console.log(file.fileExtension)
         let isValid = true;
         //file.fileExtension זה הסיומת של הקובץ
-        if (file.fileExtension !== 'jpeg' && file.fileExtension !== 'png' && file.fileExtension !== 'jpg') {
-            isValid = false;
+        if (file.fileExtension !== 'jpeg' & file.fileExtension !== 'png' & file.fileExtension !== 'jpg') {
+        //if (file.fileExtension != 'jpeg' ) {
+                MySwal.fire({
+                    title: 'Error!',
+                    text: 'You can only choose png or jpeg files to uploaded',
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                })
+                file.abortLoad();
+                isValid = false;
         }
         if (isValid) {
             console.log(file.fileExtension);
