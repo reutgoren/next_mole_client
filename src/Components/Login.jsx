@@ -75,7 +75,12 @@ class Login extends Component {
         .then(result => {
           console.log(result);
           if (result) {
-            MySwal.fire("Login successfully ", "", "success",false)
+            MySwal.fire({
+              title: 'Login successfully!',
+              icon: 'success',
+              timer: 1000,
+              showConfirmButton:false,
+            })
             this.props.history.push("/home");
           }
           else {
