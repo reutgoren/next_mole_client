@@ -153,19 +153,18 @@ class GraphEx extends Component {
             this.getNodes(rawData, id);
             this.getLinks(rawData, id, arrConnections);
         }
-
     }
 
     getKeys = (rawArr) => {
-        let totalObj = rawArr.length;                 //כמות איברים כוללת, משתנה עזר לחישוב רשיו  
-        let arrAllKeys = [];                      //מערך של כ-ל המפתחות מכל איברי המערך גייסון כולל כפילויות
+        let totalObj = rawArr.length;                 // total amount of object in original array
+        let arrAllKeys = [];                      // all keys including duplicates
         Object.keys(rawArr).forEach(function (k) {
             const values = Object.keys(rawArr[k])
             values.map((i) => {
                 arrAllKeys.push(i)
             });
         });
-        let arrDistinctKeys = Array.from(new Set(arrAllKeys));       //מערך של כל המפתחות ללא כפולים
+        let arrDistinctKeys = Array.from(new Set(arrAllKeys));       // remove duplicates
         var keysAndValues = this.countKeyRatio(arrDistinctKeys, arrAllKeys, totalObj)             //פונקציה שמוצאת כמות יחסית לכל מפתח
         return keysAndValues
     }
@@ -174,11 +173,11 @@ class GraphEx extends Component {
         const arrKeysAndRadio2 = [];
         arrDistinct.map((i) => {
             var search = i;
-            var countKey = arrAll.reduce(function (n, val) {        //פונקציה שסופרת כמה פעמים מופיע המפתח בסה"כ
+            var countKey = arrAll.reduce(function (n, val) {        // counts total amount of key appearence in the array
                 return n + (val === search);
             }, 0);
             let objValuesTmp = this.addValues(i);
-            let objValues = Array.from(new Set(objValuesTmp));      //מחיקת ערכים כפולים
+            let objValues = Array.from(new Set(objValuesTmp));      // remove duplicates
             let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));                   //חלוקה בכמות האיברים הכוללת למציאת יחסיות
             let obj = {
                 k: i, v: objValues, amount: countKey, ratio: keyRatio
@@ -186,13 +185,13 @@ class GraphEx extends Component {
             arrKeysAndRadio2.push(obj)
 
         });
-        arrKeysAndRadio2.sort(function (a, b) {           //מיון מערך מפתחות לפי סדר יורד של יחס כל מפתח
+        arrKeysAndRadio2.sort(function (a, b) {           //    sort keys by ratio
             return b.ratio - a.ratio;
         });
         return arrKeysAndRadio2
     }
 
-    addValues = (index) => {          //פונקציה שמביאה את כל הערכים מהשדות בכל איבר 
+    addValues = (index) => {          // get akk values for key 
         var val = [];
         var arrTmp = rawData;
         for (let g in arrTmp) {

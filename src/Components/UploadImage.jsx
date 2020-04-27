@@ -35,11 +35,7 @@ class FileUpload extends React.Component {
 
     AddPDF = (error, file) => {
         console.log(file)
-        //console.log(file)
-
         if (this.fileValidate(file)) {
-
-
             //this.props.sendJsonImage(file);
             console.log(file)
             console.log(file.file)
@@ -58,9 +54,7 @@ class FileUpload extends React.Component {
     fileValidate = (file) => {
         console.log(file.fileExtension)
         let isValid = true;
-        //file.fileExtension זה הסיומת של הקובץ
         if (file.fileExtension !== 'jpeg' & file.fileExtension !== 'png' & file.fileExtension !== 'jpg') {
-        //if (file.fileExtension != 'jpeg' ) {
                 MySwal.fire({
                     title: 'Error!',
                     text: 'You can only choose png or jpeg files to uploaded',
