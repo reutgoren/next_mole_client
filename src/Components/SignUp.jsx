@@ -24,7 +24,6 @@ class SignUp extends Component {
           userEmail: '',
           userPassword: '',
           userName:'',
-          //userBirthdate:'',
           userGender:null,
           validation:'True'
 
@@ -51,7 +50,7 @@ class SignUp extends Component {
         this.setState({ userGender: event.target.value });
       }
             
-    signUser = (event) => {     //להוסיף ולידציה, שלא יהיה אפשר לאפשר את הטופס מבלי למלא את השדות כראוי
+    signUser = (event) => {   
       
       var counter=0;
       if (/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}$/i.test(this.state.userEmail)) {    
