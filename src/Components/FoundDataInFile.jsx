@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, ListGroup, CardDeck, InputGroup, FormControl } from 'react-bootstrap';
+import { Card, ListGroup, CardDeck, InputGroup, FormControl , Button} from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 
 class FoundDataInFile extends Component {
@@ -53,7 +53,9 @@ class FoundDataInFile extends Component {
                             </Card.Subtitle>
                             <Card.Text>you can uncheck connection type and see what happend</Card.Text>
                         </Card.Header>
+                        <Button onClick={this.props.removeAll}>remove all</Button>
                         {
+                           
                             this.props.connections.map((item, i) => {
                                 return (
                                     <InputGroup key={i}>

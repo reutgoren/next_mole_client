@@ -9,7 +9,7 @@ import gotData from '../gotData.json'
 
 //var finalJson = { nodes: [], links: [] };
 var finalJsonNetwork = { nodes: [], links: [] }
-var removedLinks = [] ;      // save the connections that removed
+var removedLinksTmp = [] ;      // save the connections that removed
 var arrConnections =[];
 var arrKeysAndRadio=[];
 var dataFromLocal=[];
@@ -27,6 +27,8 @@ class GraphEx extends Component {
         }
         this.state = {
             finalJson: '',
+            removedLinks: []       // save the connections that removed
+
         }
     }
 
@@ -96,15 +98,31 @@ class GraphEx extends Component {
                     console.log("err post=", error);
                 });
     }
+    RemoveAllConnections=()=>{
+        removedLinksTmp = this.state.removedLinks;
+        console.log(finalJsonNetwork.links)
+        finalJsonNetwork.links.map(i=>removedLinksTmp.push(i))
+        //removedLinks.push(finalJsonNetwork.links[j]);
+
+        finalJsonNetwork.links.splice(0);
+       
+        console.log(finalJsonNetwork.links)
+        console.log(removedLinksTmp);
+        this.setState({
+            finalJson: finalJsonNetwork,
+            removedLinks: removedLinksTmp
+        })
+    }
 
     RemoveConnection = (x) => {             // add / remove connection type   
-        console.log(removedLinks, finalJsonNetwork)
+        removedLinksTmp = this.state.removedLinks;
+        console.log(removedLinksTmp, finalJsonNetwork)
         if (!x.target.checked) {         //  if connection removed
             remove();
             function remove() {
                 for (let j in finalJsonNetwork.links) {
                     if (finalJsonNetwork.links[j].connectionType === x.target.value) {
-                        removedLinks.push(finalJsonNetwork.links[j]);
+                        removedLinksTmp.push(finalJsonNetwork.links[j]);
                         finalJsonNetwork.links.splice(j, 1);
                     }
                 }
@@ -122,15 +140,15 @@ class GraphEx extends Component {
         else {
             funclear();
             function funclear() {
-                for (let k in removedLinks) {
-                    if (removedLinks[k].connectionType === x.target.value) {
-                        finalJsonNetwork.links.push(removedLinks[k]);
-                        removedLinks.splice(k, 1);
+                for (let k in removedLinksTmp) {
+                    if (removedLinksTmp[k].connectionType === x.target.value) {
+                        finalJsonNetwork.links.push(removedLinksTmp[k]);
+                        removedLinksTmp.splice(k, 1);
                     }
                 }
                 let temp = 0;
-                for (let l in removedLinks) {
-                    if (removedLinks[l].connectionType === x.target.value) {
+                for (let l in removedLinksTmp) {
+                    if (removedLinksTmp[l].connectionType === x.target.value) {
                         temp++;
                     };
                     if (temp > 0) {
@@ -139,8 +157,8 @@ class GraphEx extends Component {
                 }
             }
         }
-        console.log(removedLinks, finalJsonNetwork);
-        this.setState({finalJson:finalJsonNetwork})
+        console.log(removedLinksTmp, finalJsonNetwork);
+        this.setState({finalJson:finalJsonNetwork, removedLinks: removedLinksTmp})
         this.forceUpdate();
 
     }
@@ -357,7 +375,7 @@ class GraphEx extends Component {
                     <Row><br /></Row>
                     <Row>
                         <Col xs={12}>
-                            <FoundDataInFile passedFunction={this.RemoveConnection} data={arrKeysAndRadio} details={dataFromLocal} connections={arrConnections} />
+                            <FoundDataInFile removeAll={this.RemoveAllConnections} passedFunction={this.RemoveConnection} data={arrKeysAndRadio} details={dataFromLocal} connections={arrConnections} />
                         </Col>
                     </Row>
                     <Row>
