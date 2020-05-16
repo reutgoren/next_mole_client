@@ -109,6 +109,26 @@ class HomePage extends Component {
       //UploadJson.saveJsonToDB();
        this.child.getAlert();
        this.child2.getAlert();
+      fetch(this.apiUrl + 'Tables', {        //POST category
+        method: 'POST',
+        body: JSON.stringify(e.target.elements.formSubject.value),
+        //mode: 'no-cors',
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8'
+        })
+    })
+        .then(res => {
+            console.log('res=', res);
+            return res.json()
+        })
+        .then(
+            (result) => {
+                console.log("fetch POST= ", result);
+            },
+            (error) => {
+                console.log("err post=", error);
+            });
+
       var jsonDetails = {
         subject: this.state.jsonSubject,
         description: this.state.jsonDescription,

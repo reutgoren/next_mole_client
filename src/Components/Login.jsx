@@ -62,6 +62,7 @@ class Login extends Component {
       console.log(api)
       fetch(api, {
         method: 'GET',
+        mode: 'no-cors',
         headers: new Headers({
           'Content-Type': 'application/json; charset=UTF-8',
         })
