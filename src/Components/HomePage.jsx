@@ -55,8 +55,8 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    let local = false;
-    //let local = true;
+    //let local = false;
+    let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -106,6 +106,26 @@ class HomePage extends Component {
       alert('please upload data file')
     }
     else {
+      fetch(this.apiUrl + 'Tables', {        //POST category
+        method: 'POST',
+        body: JSON.stringify(e.target.elements.formSubject.value),
+        //mode: 'no-cors',
+        headers: new Headers({
+            'Content-type': 'application/json; charset=UTF-8'
+        })
+    })
+        .then(res => {
+            console.log('res=', res);
+            return res.json()
+        })
+        .then(
+            (result) => {
+                console.log("fetch POST= ", result);
+            },
+            (error) => {
+                console.log("err post=", error);
+            });
+
       var jsonDetails = {
         subject: this.state.jsonSubject,
         description: this.state.jsonDescription,
