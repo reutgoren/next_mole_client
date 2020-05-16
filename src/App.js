@@ -3,7 +3,6 @@ import './css/App.css';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Switch, Route } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
-//import firebase from 'firebase';
 
 import HomePage from "./Components/HomePage.jsx";
 import Login from "./Components/Login.jsx";

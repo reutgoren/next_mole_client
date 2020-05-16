@@ -1,7 +1,4 @@
-import React, { Component, useState } from 'react';
-//import './App.css';
-//import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
-//import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
@@ -9,16 +6,18 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import User from '../images/User.png'
 import Form from 'react-bootstrap/Form';
-//import { Jumbotron as Jumbo } from 'react-bootstrap';
 import styled from 'styled-components';
 import net1 from '../images/net1.png';
 import { withRouter } from 'react-router-dom';
-import UploadImage from './UploadImage.jsx';
 import logo2 from '../images/logo2.png';
 import Nav from '../Components/Nav';
 import UploadJson from './UploadJson';
+import UploadImage from './UploadImage.jsx';
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
+const MySwal = withReactContent(Swal)
 
 const Styles = styled.div`
   .jumbo {
@@ -55,8 +54,8 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    let local = false;
-    //let local = true;
+    //let local = false;
+    let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -66,8 +65,7 @@ class HomePage extends Component {
       jsonSubject: '',
       jsonDescription: '',
       jsonRowData: '',
-      jsonImage: '',
-
+      jsonImage: ''
     }
   }
 
@@ -83,7 +81,7 @@ class HomePage extends Component {
     this.setState({
       jsonRowData: JSON.parse(data)
     })
-   
+
   }
 
   getJsonImage = (data) => {
@@ -92,20 +90,25 @@ class HomePage extends Component {
     })
   }
 
-
   handleSubmit = (e) => {
     e.preventDefault();
     localStorage.setItem('jsonRowData', JSON.stringify(this.state.jsonRowData));    // save the raw data from JSON to local storage
     if (e.target.elements.formSubject.value === '') {
-      alert('please fill subject')
+      MySwal.fire("Please insert subject", "", "warning")
+
     }
     else if (e.target.elements.formDescription.value === '') {
-      alert('please fill description')
+      MySwal.fire("Please insert description", "", "warning")
+
     }
-    else if (this.state.jsonData === '') {
-      alert('please upload data file')
+    else if (this.state.jsonRowData === '') {
+      MySwal.fire("Please choose file with data", "", "warning")
+
     }
     else {
+      //UploadJson.saveJsonToDB();
+       this.child.getAlert();
+       this.child2.getAlert();
       var jsonDetails = {
         subject: this.state.jsonSubject,
         description: this.state.jsonDescription,
@@ -125,7 +128,6 @@ class HomePage extends Component {
   }
 
   render() {
-
     return (
       <div>
         <Nav />
@@ -151,10 +153,10 @@ class HomePage extends Component {
           </Container>
         </Styles>
 
-        <Container style={{  marginTop: 30 }}>
+        <Container style={{ marginTop: 30 }}>
           <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
-              <Form.Label column sm="2">
+              <Form.Label column sm="2">מפצ
                 Subject
               </Form.Label>
               <Col sm="10">
@@ -176,7 +178,7 @@ class HomePage extends Component {
                     Data
                   </Form.Label>
                   <Col sm="8">
-                    <UploadJson sendJsonData={this.getJsonData} />
+                    <UploadJson sendJsonData={this.getJsonData} ref={instance => { this.child = instance; }} />
                   </Col>
                 </Row>
               </Col>
@@ -186,12 +188,12 @@ class HomePage extends Component {
                     Theme Image
                    </Form.Label>
                   <Col sm="8">
-                    <UploadImage sendJsonImage={this.getJsonImage} />
+                    <UploadImage sendJsonImage={this.getJsonImage} ref={instance2 => { this.child2 = instance2; }}/>
                   </Col>
                 </Row>
               </Col>
             </Form.Group>
-            <Row style={{padding: 100}}>
+            <Row style={{ padding: 100 }}>
               <Col sx={12}>
                 <Button type="submit" className="btn-info">Create network</Button>
               </Col>
@@ -206,33 +208,3 @@ class HomePage extends Component {
 
 export default withRouter(HomePage);
 
-
-
-const styleBTN = {
-
-  //fontFamily: 'Roboto medium, sans-serif',
-  fonSize: '14px',
-  display: 'inline-block',
-  height: '56px',
-  miWidth: '88px',
-  justifyContent: 'center',
-  padding: '6px 16px',
-  marginBottom: '30px',
-  lineHeight: 1.42857143,
-  textAlign: 'center',
-  whiteSpace: 'nowrap',
-  verticalAlign: 'middle',
-  //-ms-touch-action: manipulation;
-  //touch-action: manipulation;
-  cursor: 'pointer',
-  //-webkit-user-select: none;
-  //-moz-user-select: none;
-  //-ms-user-select: none;
-  //user-select: none;
-  border: 0,
-  borderRadius: '5px',
-  background: 'rgba(103, 58, 183, 1)',
-  color: '#fff',
-  outline: 0,
-
-}

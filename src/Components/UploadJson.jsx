@@ -9,7 +9,7 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal)
 
 
-export default class JsonUpload extends React.Component {
+export default class UploadJson extends React.Component {
 
     state = {
         fileContent: ''
@@ -24,7 +24,8 @@ export default class JsonUpload extends React.Component {
             //או
             // קריאת התוכן של הקובץ:
             this.readJsonFile(file.file);
-            this.saveToDB(file);
+            //this.props.state.originalJson = file;
+            
         }
     }
 
@@ -55,15 +56,14 @@ export default class JsonUpload extends React.Component {
         reader.onerror = (evt) => {
             console.log("error reading file");
         }
-        
     }
-    saveToDB = (file) => {
-        console.log(file.file);
 
+    saveJsonToDB = (file) => {              // הקריאה לפונקציה מתבצעת בקומפוננטה דף הבית כאשר נלחץ אישור טופס
+        console.log(file);
         const data = new FormData();
-        data.append("UploadedFile", file.file);
+        data.append("UploadedFile", file);
         //גישה לקונטרולר
-        fetch('http://localhost:50104/api/uploadPic', {
+        fetch('https://localhost:44312/api/fileUpload', {
             method: 'post',
             contentType: false,
             processData: false,
@@ -75,6 +75,9 @@ export default class JsonUpload extends React.Component {
             console.log(error);
         });
     }
+    getAlert() {
+        alert('clicked');
+      }
     render() {
         const theme = {
             scheme: 'atelier lakeside',
@@ -99,7 +102,7 @@ export default class JsonUpload extends React.Component {
         return (
             <div style={divStyle}>
                 <FilePond allowMultiple={false} onaddfile={this.AddFile} labelIdlE='FILE UPLOAD' />
-                {this.state.fileContent !== '' && <JSONTree data={this.state.fileContent}shouldExpandNode={() => false} theme={{
+                {this.state.fileContent !== '' && <JSONTree data={this.state.fileContent} shouldExpandNode={() => false} theme={{
                     extend: theme,
                     // underline keys for literal values
                     valueLabel: {

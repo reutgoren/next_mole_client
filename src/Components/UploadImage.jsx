@@ -12,9 +12,9 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal)
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview);
 
-class FileUpload extends React.Component {
+export default class UploadImage extends React.Component {
 
-    constructor(props) {
+    /*constructor(props) {
         super(props);
         this.state = {
             files: [{
@@ -25,16 +25,22 @@ class FileUpload extends React.Component {
             }]
         };
     }
-
+*/ state = {
+    fileImg: ''
+}
 
     AddPDF = (error, file) => {
         console.log(file)
         if (this.fileValidate(file)) {
             // read file
-            this.readJsonImage(file.file);
+            //this.readJsonImage(file.file);
+            this.props.sendJsonImage(file);
+            this.setState({ fileImg: file })
         }
     }
-
+    getAlert() {
+        alert('child2');
+      }
     fileValidate = (file) => {
         console.log(file.fileExtension)
         let isValid = true;
@@ -51,27 +57,20 @@ class FileUpload extends React.Component {
         if (isValid) {
             console.log(file.fileExtension);
             console.log(file.fileSize);
+            
         }
         return isValid;
     }
 
-    readJsonImage = (file) => {
-        var reader = new FileReader();
-        reader.readAsDataURL(file, "UTF-8");
-        reader.onload = (evt) => {
-            console.log(evt.target.result);
-            this.props.sendJsonImage(evt.target.result);
-        }
-        reader.onerror = (evt) => {
-            console.log("error reading file");
-        }
-    }
-
-    saveToDB = (file) => {
+    getAlert() {
+        alert('clicked');
+      }
+    
+    saveImgToDB = (file) => {
         console.log(file.file);
         const data = new FormData();
         data.append("UploadedFile", file.file);
-        fetch('http://localhost:50104/api/uploadPic', {
+        fetch('http://localhost:44312/api/uploadPic', {
             method: 'post',
             contentType: false,
             processData: false,
@@ -93,13 +92,12 @@ class FileUpload extends React.Component {
     render() {
         return (
             <div>
-                <FilePond
-                    allowMultiple={false} onaddfile={this.AddPDF} />
+                <FilePond allowMultiple={false} onaddfile={this.AddPDF} />
             </div>
         )
     }
 }
-export default withRouter(FileUpload); 
+//export default withRouter(UploadImage); 
 
 
 
