@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
 import gotData from '../gotData.json'
+import { easeLinear } from 'd3';
 
 
 //var finalJson = { nodes: [], links: [] };
@@ -183,7 +184,7 @@ class GraphEx extends Component {
             });
         });
         let arrDistinctKeys = Array.from(new Set(arrAllKeys));       // remove duplicates
-        var keysAndValues = this.countKeyRatio(arrDistinctKeys, arrAllKeys, totalObj)             //פונקציה שמוצאת כמות יחסית לכל מפתח
+        var keysAndValues = this.countKeyRatio(arrDistinctKeys, arrAllKeys, totalObj)             // get ratio for key
         return keysAndValues
     }
 
@@ -196,7 +197,7 @@ class GraphEx extends Component {
             }, 0);
             let objValuesTmp = this.addValues(i);
             let objValues = Array.from(new Set(objValuesTmp));      // remove duplicates values
-            let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));                   //חלוקה בכמות האיברים הכוללת למציאת יחסיות
+            let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));                 
             let obj = {
                 k: i, v: objValues, amount: countKey, ratio: keyRatio
             }
@@ -258,10 +259,9 @@ class GraphEx extends Component {
                 //console.log(itemToSearch, 'has ',totalObjConnection,' connections')
             }
         })
-        console.log(total)
         if(total>maxRatioObj.v.length){
             isId=true;
-            alert(potentialId+' is the key that found uniqe')
+            console.log(potentialId+' is the key that found uniqe')
         }
         arrConnections= this.getConnections(arrCon)
         return potentialId
@@ -309,7 +309,7 @@ class GraphEx extends Component {
                 var searchedItem = tmpArr[item][id];
                 let itemToAddBack = tmpArr[item];
                 var withoutCorrent = tmpArr;
-                withoutCorrent.splice(item, 1);          // dismis the current
+                withoutCorrent.splice(item, 1);          // dismiss the current
                 for (let i in withoutCorrent) {
                     for (let key in withoutCorrent[i]) {
                         if (key !== id && key !== 'id') {                   // search all keys bedise 'id', beacuse it key we added
@@ -341,6 +341,9 @@ class GraphEx extends Component {
                 withoutCorrent.splice(item, 0, itemToAddBack)         // return back the current
                 tmpArr = withoutCorrent;
             }
+            arrConnections.sort(function (a, b) {           //    sort connection types by amount of appearence
+                return b.amount - a.amount;
+            });
             finalJsonNetwork.links= linksToAdd;
             console.log(finalJsonNetwork)
             this.forceUpdate();
@@ -350,20 +353,17 @@ class GraphEx extends Component {
 
     render() {
         if(localStorage.getItem('jsonRowData')){
-            rawData = JSON.parse(localStorage.getItem('jsonRowData'));
-            
+            rawData = JSON.parse(localStorage.getItem('jsonRowData'));         
        }
        else{
         rawData = this.props.location.state.jsonDetails.rawData;
        }
-
        if(localStorage.getItem('jsonDetails')){
         dataFromLocal = JSON.parse(localStorage.getItem('jsonDetails'));    
-   }
-   else{
-    dataFromLocal = this.props.location.state.jsonDetails.rawData;
-
-   }
+        }
+        else{
+         dataFromLocal = this.props.location.state.jsonDetails.rawData
+         }
         //rawData= this.props.location.state.jsonDetails.rawData;
         console.log(rawData)
 

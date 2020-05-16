@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { withRouter} from 'react-router-dom';
-import firebase from 'firebase';
-
 
 
 const MySwal = withReactContent(Swal)
