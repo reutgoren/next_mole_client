@@ -107,11 +107,12 @@ class HomePage extends Component {
     }
     else {
       //UploadJson.saveJsonToDB();
-       this.child.getAlert();
-       this.child2.getAlert();
+       //this.child.getAlert();
+       //this.child2.getAlert();
+       let str= e.target.elements.formSubject.value.replace(/ /g,"_");
       fetch(this.apiUrl + 'Tables', {        //POST category
         method: 'POST',
-        body: JSON.stringify(e.target.elements.formSubject.value),
+        body: JSON.stringify(str),
         //mode: 'no-cors',
         headers: new Headers({
             'Content-type': 'application/json; charset=UTF-8'
@@ -176,7 +177,7 @@ class HomePage extends Component {
         <Container style={{ marginTop: 30 }}>
           <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
-              <Form.Label column sm="2">מפצ
+              <Form.Label column sm="2">
                 Subject
               </Form.Label>
               <Col sm="10">

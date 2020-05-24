@@ -13,6 +13,8 @@
     "filepond-plugin-image-exif-orientation": "^1.0.6",
     "filepond-plugin-image-preview": "^4.6.1",
     "firebase": "^7.12.0",
+    "is-image": "^3.0.0",
+    "is-image-url": "^1.1.8",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0",
@@ -27,11 +29,11 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "styled-components": "^5.0.1",
-    "three": "^0.115.0",
     "sweetalert": "^2.1.2",
     "sweetalert2": "^9.5.3",
     "sweetalert2-react": "^0.8.3",
-    "sweetalert2-react-content": "^2.0.2"
+    "sweetalert2-react-content": "^2.0.2",
+    "three": "^0.115.0"
   },
   "scripts": {
     "start": "react-scripts start",

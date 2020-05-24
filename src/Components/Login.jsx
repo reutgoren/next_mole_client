@@ -59,10 +59,12 @@ class Login extends Component {
     }
     else{
       let api= this.apiUrl+"user/"+emailStr+"/"+passwordStr;
-      console.log(api)
+      console.log(api);
+      this.props.history.push("/home");
+
       fetch(api, {
         method: 'GET',
-        mode: 'no-cors',
+        //mode: 'no-cors',
         headers: new Headers({
           'Content-Type': 'application/json; charset=UTF-8',
         })
@@ -83,7 +85,8 @@ class Login extends Component {
             this.props.history.push("/home");
           }
           else {
-            MySwal.fire("Email or password are incorrect, please try again", "", "warning")
+            MySwal.fire("Email or password are incorrect, please try again", "", "warning");
+            
           }
         },
           (error) => {

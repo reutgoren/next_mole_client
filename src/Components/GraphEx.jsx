@@ -15,8 +15,8 @@ var arrConnections =[];
 var arrKeysAndRadio=[];
 var dataFromLocal=[];
 var rawData=[];
-
-
+//const isImageUrl = require('is-image-url');
+const isImage = require('is-image');
 class GraphEx extends Component {
     constructor(props) {
         super(props)
@@ -27,24 +27,30 @@ class GraphEx extends Component {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
         }
         this.state = {
-            finalJson: '',
-            removedLinks: []       // save the connections that removed
+            dataBefore: this.props.location.state.jsonDetails.rawData,
+            finalJson: { nodes: [], links: [] },
+            removedLinks: [],       // save the connections that removed
+            isAllChecked:true,
+            connectionsAll:'',
 
         }
     }
 
     postJsonToDB = (file) => {                              // save nodes and links to DB
         const nodesList = file.nodes.map(item => {
-            let str = JSON.stringify(item)
-            let strW = str.replace(/'/g, "");
+            const {image, index, vx, vy, vz, x, y, z,color,__threeObj, ...withoutGraphParams } = item;         //  remove all graph parameters like vx, vy.....
+            let str = JSON.stringify(withoutGraphParams)
+            let strW = str.replace(/'/g, "").replace(/"|{|}/g, "");
             let id = item.id;
             let idW = id.replace(/'/g, "");
             var singleNode = {
                 NodeNum: idW,
+                NodeImageURL: item.nodeImage,
                 NodeDescription: strW
             }
             return singleNode;
         })
+
         const linksList = file.links.map(item => {
             let sour = item.source.id;
             let sourW = sour.replace(/'/g, "");
@@ -59,8 +65,13 @@ class GraphEx extends Component {
             }
             return singleLink;
         })
-        console.log(linksList)
-        fetch(this.apiUrl + 'nodes', {        //POST nodes
+        console.log(linksList);
+        console.log(this.props.location.state.jsonDetails);
+        let str= this.props.location.state.jsonDetails.subject;
+        console.log(str)
+        var tableName = str.replace(/ /g,"_");
+        console.log(tableName)
+        fetch(this.apiUrl + 'nodes/'+tableName, {        //POST nodes
             method: 'POST',
             body: JSON.stringify(nodesList),
             //mode: 'no-cors',
@@ -80,7 +91,7 @@ class GraphEx extends Component {
                     console.log("err post=", error);
                 });
 
-        fetch(this.apiUrl + 'links', {              //POST links
+        fetch(this.apiUrl + 'links/'+tableName, {              //POST links
             method: 'POST',
             body: JSON.stringify(linksList),
             headers: new Headers({
@@ -99,6 +110,7 @@ class GraphEx extends Component {
                     console.log("err post=", error);
                 });
     }
+
     RemoveAllConnections=()=>{
         removedLinksTmp = this.state.removedLinks;
         console.log(finalJsonNetwork.links)
@@ -108,10 +120,12 @@ class GraphEx extends Component {
         finalJsonNetwork.links.splice(0);
        
         console.log(finalJsonNetwork.links)
-        console.log(removedLinksTmp);
+        console.log('removed ',removedLinksTmp);
+
         this.setState({
             finalJson: finalJsonNetwork,
-            removedLinks: removedLinksTmp
+            removedLinks: removedLinksTmp,
+            isAllChecked: false
         })
     }
 
@@ -120,6 +134,12 @@ class GraphEx extends Component {
         console.log(removedLinksTmp, finalJsonNetwork)
         if (!x.target.checked) {         //  if connection removed
             remove();
+            console.log(arrConnections)
+            //arrConnections.map(i=>)
+            this.setState({
+              //  con
+            })
+
             function remove() {
                 for (let j in finalJsonNetwork.links) {
                     if (finalJsonNetwork.links[j].connectionType === x.target.value) {
@@ -159,8 +179,10 @@ class GraphEx extends Component {
             }
         }
         console.log(removedLinksTmp, finalJsonNetwork);
-        this.setState({finalJson:finalJsonNetwork, removedLinks: removedLinksTmp})
-        this.forceUpdate();
+        this.setState({
+            finalJson:finalJsonNetwork, 
+            removedLinks: removedLinksTmp});
+        //this.forceUpdate();
 
     }
 
@@ -210,7 +232,7 @@ class GraphEx extends Component {
         return arrKeysAndRadio2
     }
 
-    addValues = (index) => {          // get akk values for key 
+    addValues = (index) => {          // get all values for key 
         var val = [];
         var arrTmp = rawData;
         for (let g in arrTmp) {
@@ -263,7 +285,10 @@ class GraphEx extends Component {
             isId=true;
             console.log(potentialId+' is the key that found uniqe')
         }
-        arrConnections= this.getConnections(arrCon)
+        arrConnections= this.getConnections(arrCon);
+        this.setState({
+            connectionsAll: arrConnections
+        })
         return potentialId
     }
 
@@ -281,11 +306,12 @@ class GraphEx extends Component {
             //let count= this.countAppearence(tmpArrConnectionType2[i],arr)
             let obj = {
                 name: tmpArrConnectionType2[i],
-                amount: 0
+                amount: 0,
+                isaChecked: true
             }
             arrConnectionType2.push(obj)
         }
-        console.log(arrConnectionType2)
+        console.log(arrConnectionType2);
         return arrConnectionType2;
      }
 
@@ -294,10 +320,33 @@ class GraphEx extends Component {
         for (let item in arr) {
             let newNode = arr[item];                        //create new node
             newNode.id = arr[item][id];
+            newNode.nodeImage = '';
+            for (let key in arr[item]) {                // look for an image URL in the object
+                if (typeof arr[item][key]==='object') {
+                    for(let k in arr[item][key]){
+                        var isImageString = isImage(arr[item][key][k]);
+                        if(isImageString){
+                            newNode.nodeImage = arr[item][key][k]
+                            break
+                        }
+                    }                  
+                }
+                else if(typeof arr[item][key]==='string' ){
+                    var isImageString = isImage(arr[item][key]);
+                    if(isImageString){
+                        newNode.nodeImage = arr[item][key]
+                        break
+                    }
+                }
+                else{
+                    console.log(typeof arr[item][key])
+                    break
+                }               
+             }
             nodesToAdd.push(newNode);
-        }
+        }     
         finalJsonNetwork.nodes=nodesToAdd;
-        this.forceUpdate();
+        console.log(finalJsonNetwork.nodes);
         this.setState({finalJson: finalJsonNetwork})
      }
 
@@ -346,7 +395,7 @@ class GraphEx extends Component {
             });
             finalJsonNetwork.links= linksToAdd;
             console.log(finalJsonNetwork)
-            this.forceUpdate();
+            //this.forceUpdate();
             this.setState({finalJson: finalJsonNetwork})
 
      }
@@ -366,7 +415,9 @@ class GraphEx extends Component {
          }
         //rawData= this.props.location.state.jsonDetails.rawData;
         console.log(rawData)
+        console.log(this.state.dataBefore)
 
+        console.log('render', this.state.finalJson)
 
         return (
             <div>
@@ -386,7 +437,7 @@ class GraphEx extends Component {
                     <Row>
                         <Col xs={10}>
                             <ForceGraph3D
-                                graphData={finalJsonNetwork}
+                                graphData={this.state.finalJson}
                                 nodeLabel="id"
                                 linkLabel="connectionType"
                                 nodeAutoColorBy="id"

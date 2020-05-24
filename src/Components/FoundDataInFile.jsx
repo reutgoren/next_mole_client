@@ -5,6 +5,8 @@ import { withRouter } from 'react-router-dom';
 class FoundDataInFile extends Component {
 
     render() {
+        console.log(this.props.isChecked)
+
         return (
             <div>
                 <Card>
@@ -54,13 +56,13 @@ class FoundDataInFile extends Component {
                             <Card.Text>you can uncheck connection type and see what happend</Card.Text>
                         </Card.Header>
                         <Button onClick={this.props.removeAll}>remove all</Button>
+                        
                         {
-                           
                             this.props.connections.map((item, i) => {
                                 return (
                                     <InputGroup key={i}>
                                         <InputGroup.Prepend>
-                                            <InputGroup.Checkbox value={item.name} onClick={this.props.passedFunction} defaultChecked={true} aria-label="Checkbox for following text input" />
+                                            <InputGroup.Checkbox value={item.name} onChange={this.props.passedFunction} checked={item.isChecked} aria-label="Checkbox for following text input" />
                                         </InputGroup.Prepend>
                                         <FormControl placeholder={item.name + " " + item.amount + " times"} aria-label="Text input with checkbox" />
                                     </InputGroup>
