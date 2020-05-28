@@ -393,7 +393,8 @@ class GraphEx extends Component {
             arrConnections.sort(function (a, b) {           //    sort connection types by amount of appearence
                 return b.amount - a.amount;
             });
-            finalJsonNetwork.links= linksToAdd;
+            let linksTmp = linksToAdd.filter( (ele, ind) => ind === linksToAdd.findIndex( elem => elem.source === ele.source && elem.target === ele.target))        //  remove duplicate links
+            finalJsonNetwork.links= linksTmp;
             console.log(finalJsonNetwork)
             //this.forceUpdate();
             this.setState({finalJson: finalJsonNetwork})

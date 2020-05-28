@@ -13,6 +13,7 @@ import logo2 from '../images/logo2.png';
 import Nav from '../Components/Nav';
 import UploadJson from './UploadJson';
 import UploadImage from './UploadImage.jsx';
+import Category from './Category';
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -65,8 +66,43 @@ class HomePage extends Component {
       jsonSubject: '',
       jsonDescription: '',
       jsonRowData: '',
-      jsonImage: ''
+      jsonImage: '',
+      existingCategories:[]
     }
+  }
+
+  componentDidMount=()=>{
+    this.getCategories();
+  }
+
+  getCategories=()=>{
+    let api= this.apiUrl+"Category";
+    console.log(api);
+    fetch(api, {
+      method: 'GET',
+      //mode: 'no-cors',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        return res.json();
+      })
+      .then(result => {
+        console.log(result);
+        if (result!=null) {
+          console.log(result)
+         this.setState({existingCategories: result})
+        }
+        else {
+         alert("categories wasn't found")
+          
+        }
+      },
+        (error) => {
+          console.log("err=", error);
+        });
   }
 
   handleSubjectChange = (e) => {
@@ -175,6 +211,12 @@ class HomePage extends Component {
         </Styles>
 
         <Container style={{ marginTop: 30 }}>
+          <Row>
+          {
+            this.state.existingCategories.map((item) =>  <Category key={item.Id} data={item}/>)
+            }
+          </Row>
+          
           <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
               <Form.Label column sm="2">
@@ -220,6 +262,7 @@ class HomePage extends Component {
               </Col>
             </Row>
           </Form>
+          
         </Container>
       </div>
 
