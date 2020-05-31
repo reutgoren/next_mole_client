@@ -8,6 +8,7 @@ import User from '../images/User.png'
 import Form from 'react-bootstrap/Form';
 import styled from 'styled-components';
 import net1 from '../images/net1.png';
+import bg from '../images/bgHomePage.png';
 import { withRouter } from 'react-router-dom';
 import logo2 from '../images/logo2.png';
 import Nav from '../Components/Nav';
@@ -22,16 +23,14 @@ const MySwal = withReactContent(Swal)
 
 const Styles = styled.div`
   .jumbo {
-    background: url(${net1}) no-repeat fixed bottom;
+    background: url(${bg}) no-repeat fixed bottom;
     background-size: cover;
-    color: #efefef;
     height: 360px;
     position: relative;
     z-index: -2;
   }
   .overlay {
-    background-color: #000;
-    opacity: 0.6;
+  
     position: absolute;
     top: 0;
     left: 0;
@@ -92,12 +91,10 @@ class HomePage extends Component {
       .then(result => {
         console.log(result);
         if (result!=null) {
-          console.log(result)
          this.setState({existingCategories: result})
         }
         else {
          alert("categories wasn't found")
-          
         }
       },
         (error) => {
@@ -183,6 +180,9 @@ class HomePage extends Component {
     }
 
   }
+  getNetForCat=()=>{
+    console.log("inside get network")
+  }
 
   render() {
     return (
@@ -193,13 +193,17 @@ class HomePage extends Component {
             <div style={{ overflow: "hidden", maxHeight: 360, marginTop: 60, maxWidth: "100%" }} className='overlay'>
               <Row>
                 <Col xs={6} style={{ maxHeight: 250 }}>
-                  <h3 style={{ opacity: 0.5, color: 'rgba(240, 255, 240)', marginTop: 50, marginLeft: 10, textAlign: 'left' }}>Welcome To The Mole's</h3>
-                  <h5 style={{ opacity: 0.5, color: 'rgba(240, 255, 240)', marginLeft: 10, textAlign: 'left' }}>Worlds Creation Site</h5>
-                  <p style={{ opacity: 0.5, color: 'rgba(240, 255, 240)', marginLeft: 10, textAlign: 'left' }}>
+                  <h3 style={{ opacity: 0.9, color: 'rgb(22, 25, 22)', marginTop: 50, marginLeft: 10, textAlign: 'left' }}>Welcome To The Mole's</h3>
+                  <h5 style={{ opacity: 0.9, color: 'rgb(22, 25, 22)', marginLeft: 10, textAlign: 'left' }}>Worlds Creation Site</h5>
+                  <p style={{ opacity: 0.9, color: 'rgb(22, 25, 22)', marginLeft: 10, textAlign: 'left' }}>
                     Here you can create your oun world by choice</p>
                 </Col>
                 <Col xs={6} >
-                  <Row style={{ marginTop: 30 }} ><Col style={{}} className="temp" md={6} xs={12}><img alt='' style={{ maxHeight: 140, maxWidth: 140 }} src={logo2} /></Col>
+                
+                  <Row style={{ marginTop: 30 }} >
+                   <Col style={{}} className="temp" md={6} xs={12}>
+                    {/* <img alt='' style={{ maxHeight: 140, maxWidth: 140 }} src={logo2} /> */}
+                   </Col>
                     <Col style={{ paddingRight: 10, marginTop: 10 }} className="temp" xs={12} md={6}> <img alt='' style={{ zIndex: '100', Height: 120, maxWidth: 100 }} src={User} />
                       <p>User Name</p>
                     </Col>
@@ -211,13 +215,13 @@ class HomePage extends Component {
         </Styles>
 
         <Container style={{ marginTop: 30 }}>
-          <Row>
+          <Row className='justify-content-center'>
           {
-            this.state.existingCategories.map((item) =>  <Category key={item.Id} data={item}/>)
+            this.state.existingCategories.map((item) =>  <Category key={item.Id} data={item} getNetwork={this.getNetForCat}/>)
             }
           </Row>
-          
-          <Form noValidate onSubmit={(e) => this.handleSubmit(e)}>
+          <Row>
+          <Form style={{width: '100%', marginTop: 30}} noValidate onSubmit={(e) => this.handleSubmit(e)}>
             <Form.Group as={Row} controlId="formSubject">
               <Form.Label column sm="2">
                 Subject
@@ -258,11 +262,11 @@ class HomePage extends Component {
             </Form.Group>
             <Row style={{ padding: 100 }}>
               <Col sx={12}>
-                <Button type="submit" className="btn-info">Create network</Button>
+                <Button style={{padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem'}} type="submit" className="btn-info">Build network</Button>
               </Col>
             </Row>
           </Form>
-          
+          </Row>
         </Container>
       </div>
 

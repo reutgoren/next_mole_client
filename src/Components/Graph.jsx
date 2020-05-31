@@ -10,14 +10,14 @@ import { easeLinear } from 'd3';
 
 //var finalJson = { nodes: [], links: [] };
 var finalJsonNetwork = { nodes: [], links: [] }
-var removedLinksTmp = [] ;      // save the connections that removed
-var arrConnections =[];
-var arrKeysAndRadio=[];
-var dataFromLocal=[];
-var rawData=[];
+var removedLinksTmp = [];      // save the connections that removed
+var arrConnections = [];
+var arrKeysAndRadio = [];
+var dataFromLocal = [];
+var rawData = [];
 //const isImageUrl = require('is-image-url');
 const isImage = require('is-image');
-class GraphEx extends Component {
+class Graph extends Component {
     constructor(props) {
         super(props)
         //let local = false;
@@ -27,18 +27,17 @@ class GraphEx extends Component {
             this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
         }
         this.state = {
-            dataBefore: this.props.location.state.jsonDetails.rawData,
+            //dataBefore: this.props.location.state.jsonDetails.rawData,
             finalJson: { nodes: [], links: [] },
             removedLinks: [],       // save the connections that removed
-            isAllChecked:true,
-            connectionsAll:'',
+            connectionsAll: [],
 
         }
     }
 
     postJsonToDB = (file) => {                              // save nodes and links to DB
         const nodesList = file.nodes.map(item => {
-            const {image, index, vx, vy, vz, x, y, z,color,__threeObj, ...withoutGraphParams } = item;         //  remove all graph parameters like vx, vy.....
+            const { image, index, vx, vy, vz, x, y, z, color, __threeObj, ...withoutGraphParams } = item;         //  remove all graph parameters like vx, vy.....
             let str = JSON.stringify(withoutGraphParams)
             let strW = str.replace(/'/g, "").replace(/"|{|}/g, "");
             let id = item.id;
@@ -67,11 +66,11 @@ class GraphEx extends Component {
         })
         console.log(linksList);
         console.log(this.props.location.state.jsonDetails);
-        let str= this.props.location.state.jsonDetails.subject;
+        let str = this.props.location.state.jsonDetails.subject;
         console.log(str)
-        var tableName = str.replace(/ /g,"_");
+        var tableName = str.replace(/ /g, "_");
         console.log(tableName)
-        fetch(this.apiUrl + 'nodes/'+tableName, {        //POST nodes
+        fetch(this.apiUrl + 'nodes/' + tableName, {        //POST nodes
             method: 'POST',
             body: JSON.stringify(nodesList),
             //mode: 'no-cors',
@@ -91,7 +90,7 @@ class GraphEx extends Component {
                     console.log("err post=", error);
                 });
 
-        fetch(this.apiUrl + 'links/'+tableName, {              //POST links
+        fetch(this.apiUrl + 'links/' + tableName, {              //POST links
             method: 'POST',
             body: JSON.stringify(linksList),
             headers: new Headers({
@@ -111,35 +110,46 @@ class GraphEx extends Component {
                 });
     }
 
-    RemoveAllConnections=()=>{
+    RemoveAllConnections = (btnState) => {
+        console.log(btnState)
         removedLinksTmp = this.state.removedLinks;
         console.log(finalJsonNetwork.links)
-        finalJsonNetwork.links.map(i=>removedLinksTmp.push(i))
-        //removedLinks.push(finalJsonNetwork.links[j]);
-
-        finalJsonNetwork.links.splice(0);
-       
-        console.log(finalJsonNetwork.links)
-        console.log('removed ',removedLinksTmp);
-
+        if(btnState==='allUnchacked'){
+            finalJsonNetwork.links.map(i => removedLinksTmp.push(i))
+            finalJsonNetwork.links.splice(0);
+    
+            console.log('links remain: ', finalJsonNetwork.links)
+            console.log('removed ', removedLinksTmp);
+            arrConnections.map(o=>{
+                o.isChecked=false
+            })
+        }
+        else{
+            removedLinksTmp.map(i => finalJsonNetwork.links.push(i))
+            removedLinksTmp.splice(0);
+            console.log('links remain: ', finalJsonNetwork.links)
+            console.log('removed ', removedLinksTmp);
+            arrConnections.map(o=>{
+                o.isChecked=true
+            })
+        }
+        
         this.setState({
+            connectionsAll:arrConnections,
             finalJson: finalJsonNetwork,
             removedLinks: removedLinksTmp,
-            isAllChecked: false
         })
     }
 
     RemoveConnection = (x) => {             // add / remove connection type   
         removedLinksTmp = this.state.removedLinks;
         console.log(removedLinksTmp, finalJsonNetwork)
-        if (!x.target.checked) {         //  if connection removed
+        if (!x.target.checked) {         //  if connection removed        
+                let pos = arrConnections.map(function (e) { return e.name; }).indexOf(x.target.value);
+                arrConnections[pos].isChecked = false;
+                this.setState({connectionsAll: arrConnections})
             remove();
-            console.log(arrConnections)
-            //arrConnections.map(i=>)
-            this.setState({
-              //  con
-            })
-
+          
             function remove() {
                 for (let j in finalJsonNetwork.links) {
                     if (finalJsonNetwork.links[j].connectionType === x.target.value) {
@@ -159,6 +169,9 @@ class GraphEx extends Component {
             }
         }
         else {
+            let pos = arrConnections.map(function (e) { return e.name; }).indexOf(x.target.value);
+            arrConnections[pos].isChecked = true;
+            this.setState({connectionsAll: arrConnections})
             funclear();
             function funclear() {
                 for (let k in removedLinksTmp) {
@@ -178,19 +191,22 @@ class GraphEx extends Component {
                 }
             }
         }
-        console.log(removedLinksTmp, finalJsonNetwork);
+        console.log("removed: ", removedLinksTmp);
+        console.log('finaljson: ', finalJsonNetwork)
+        console.log(this.state.connectionsAll)
         this.setState({
-            finalJson:finalJsonNetwork, 
-            removedLinks: removedLinksTmp});
+            finalJson: finalJsonNetwork,
+            removedLinks: removedLinksTmp
+        });
         //this.forceUpdate();
 
     }
 
-     componentDidMount() {
+    componentDidMount() {
         arrKeysAndRadio = this.getKeys(rawData)
         console.log(arrKeysAndRadio)
-        var id= this.getId(arrKeysAndRadio);
-        if(id!==''){
+        var id = this.getId(arrKeysAndRadio);
+        if (id !== '') {
             this.getNodes(rawData, id);
             this.getLinks(rawData, id, arrConnections);
         }
@@ -219,7 +235,7 @@ class GraphEx extends Component {
             }, 0);
             let objValuesTmp = this.addValues(i);
             let objValues = Array.from(new Set(objValuesTmp));      // remove duplicates values
-            let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));                 
+            let keyRatio = parseFloat((objValues.length / totalObjCount).toFixed(3));
             let obj = {
                 k: i, v: objValues, amount: countKey, ratio: keyRatio
             }
@@ -257,35 +273,35 @@ class GraphEx extends Component {
         var maxRatioObj = arrOfKeysTmp.reduce((prev, current) => (prev.ratio > current.ratio) ? prev : current);  // get the object with maximun ratio
         var maxRatioIndex = arrOfKeys.findIndex(o => o.ratio === maxRatioObj.ratio);     // find the object index 
         let potentialId = maxRatioObj.k;            // potential key to be id
-        let total=0;
+        let total = 0;
         var arrOfKeysTmpCopy = arrOfKeysTmp;
-        var arrCon=[];
-        maxRatioObj.v.map((itemToSearch) => {     
-            var totalObjConnection=0;
+        var arrCon = [];
+        maxRatioObj.v.map((itemToSearch) => {
+            var totalObjConnection = 0;
             arrOfKeysTmpCopy.map((searchInto) => {
                 if (searchInto.k !== potentialId) {                      // sreach in all other keys beside the potential
-                    var count=this.countAppearence(itemToSearch, searchInto.v);
-                    if(count!==0){                          
-                            arrCon.push(searchInto.k)    // build array of connection types, tmp
-                        
+                    var count = this.countAppearence(itemToSearch, searchInto.v);
+                    if (count !== 0) {
+                        arrCon.push(searchInto.k)    // build array of connection types, tmp
+
                     }
-                    totalObjConnection+=count;
-                    total+=count;             
+                    totalObjConnection += count;
+                    total += count;
                 }
             })
 
-            if(totalObjConnection===0){
-               //console.log(itemToSearch,' has no connections')
+            if (totalObjConnection === 0) {
+                //console.log(itemToSearch,' has no connections')
             }
-            else{
+            else {
                 //console.log(itemToSearch, 'has ',totalObjConnection,' connections')
             }
         })
-        if(total>maxRatioObj.v.length){
-            isId=true;
-            console.log(potentialId+' is the key that found uniqe')
+        if (total > maxRatioObj.v.length) {
+            isId = true;
+            console.log(potentialId + ' is the key that found uniqe')
         }
-        arrConnections= this.getConnections(arrCon);
+        arrConnections = this.getConnections(arrCon);
         this.setState({
             connectionsAll: arrConnections
         })
@@ -299,124 +315,141 @@ class GraphEx extends Component {
         return count
     }
 
-     getConnections=(arr)=>{
+    getConnections = (arr) => {
         var arrConnectionType2 = [];
-        var tmpArrConnectionType2 = Array.from(new Set(arr));           // remove duplicate
+        var tmpArrConnectionType2 = Array.from(new Set(arr));           // remove duplicate connections
         for (let i = 0; i < tmpArrConnectionType2.length; i++) {                                   // create array of key value pair
             //let count= this.countAppearence(tmpArrConnectionType2[i],arr)
             let obj = {
                 name: tmpArrConnectionType2[i],
-                amount: 0,
-                isaChecked: true
+                conAmount: 0,
+                isChecked: true
             }
             arrConnectionType2.push(obj)
         }
         console.log(arrConnectionType2);
         return arrConnectionType2;
-     }
+    }
 
-     getNodes=(arr, id)=>{
+    getNodes = (arr, id) => {
         var nodesToAdd = [];
         for (let item in arr) {
             let newNode = arr[item];                        //create new node
             newNode.id = arr[item][id];
             newNode.nodeImage = '';
             for (let key in arr[item]) {                // look for an image URL in the object
-                if (typeof arr[item][key]==='object') {
-                    for(let k in arr[item][key]){
+                if (typeof arr[item][key] === 'object') {
+                    for (let k in arr[item][key]) {
                         var isImageString = isImage(arr[item][key][k]);
-                        if(isImageString){
+                        if (isImageString) {
                             newNode.nodeImage = arr[item][key][k]
                             break
                         }
-                    }                  
+                    }
                 }
-                else if(typeof arr[item][key]==='string' ){
+                else if (typeof arr[item][key] === 'string') {
                     var isImageString = isImage(arr[item][key]);
-                    if(isImageString){
+                    if (isImageString) {
                         newNode.nodeImage = arr[item][key]
                         break
                     }
                 }
-                else{
+                else {
                     console.log(typeof arr[item][key])
                     break
-                }               
-             }
+                }
+            }
             nodesToAdd.push(newNode);
-        }     
-        finalJsonNetwork.nodes=nodesToAdd;
+        }
+        finalJsonNetwork.nodes = nodesToAdd;
         console.log(finalJsonNetwork.nodes);
-        this.setState({finalJson: finalJsonNetwork})
-     }
+        this.setState({ finalJson: finalJsonNetwork })
+    }
 
-     getLinks=(arr, id , arrConnections)=>{
-            var linksToAdd = [];
-            var tmpArr = arr;                      // search links in the original array, every loop we dismiss the current
-           
-            for (let item in tmpArr) {
-                var searchedItem = tmpArr[item][id];
-                let itemToAddBack = tmpArr[item];
-                var withoutCorrent = tmpArr;
-                withoutCorrent.splice(item, 1);          // dismiss the current
-                for (let i in withoutCorrent) {
-                    for (let key in withoutCorrent[i]) {
-                        if (key !== id && key !== 'id') {                   // search all keys bedise 'id', beacuse it key we added
-                            if (typeof withoutCorrent[i][key] === 'object') {
-                                for (let j = 0; j < withoutCorrent[i][key].length; j++) {
-                                    if (searchedItem === withoutCorrent[i][key][j]) {
-                                        let newLink = { target: withoutCorrent[i][id], source: searchedItem, connectionType: key }
-                                        linksToAdd.push(newLink)                //create new link
-                                        for (let i in arrConnections) {
-                                            if (arrConnections[i].name === key) {
-                                                let tmpAmount = arrConnections[i].amount;       // count amount of connection type
-                                                tmpAmount++;
-                                                arrConnections[i].amount = tmpAmount;
-                                            }
-                                        }
-                                    }
+    getLinks = (arr, id, arrConnections) => {
+        var linksToAdd = [];
+        var tmpArr = arr;                      // search links in the original array, every loop we dismiss the current
+
+        for (let item in tmpArr) {
+            var searchedItem = tmpArr[item][id];
+            let itemToAddBack = tmpArr[item];
+            var withoutCorrent = tmpArr;
+            withoutCorrent.splice(item, 1);          // dismiss the current
+            for (let i in withoutCorrent) {
+                for (let key in withoutCorrent[i]) {
+                    if (key !== id && key !== 'id') {                   // search all keys bedise 'id', beacuse it key we added
+                        if (typeof withoutCorrent[i][key] === 'object') {
+                            for (let j = 0; j < withoutCorrent[i][key].length; j++) {
+                                if (searchedItem === withoutCorrent[i][key][j]) {
+                                    let newLink = { target: withoutCorrent[i][id], source: searchedItem, connectionType: key }
+                                    linksToAdd.push(newLink)                //create new link                                 
                                 }
                             }
-                            else {
-                                if (searchedItem === withoutCorrent[i][key]) {
-                                    let newLink = { source: withoutCorrent[i][id], target: searchedItem, connectionType: key }
-                                    linksToAdd.push(newLink);
-
-                                }
+                        }
+                        else {
+                            if (searchedItem === withoutCorrent[i][key]) {
+                                let newLink = { source: withoutCorrent[i][id], target: searchedItem, connectionType: key }
+                                linksToAdd.push(newLink);
                             }
                         }
                     }
                 }
-                withoutCorrent.splice(item, 0, itemToAddBack)         // return back the current
-                tmpArr = withoutCorrent;
             }
-            arrConnections.sort(function (a, b) {           //    sort connection types by amount of appearence
-                return b.amount - a.amount;
-            });
-            let linksTmp = linksToAdd.filter( (ele, ind) => ind === linksToAdd.findIndex( elem => elem.source === ele.source && elem.target === ele.target))        //  remove duplicate links
-            finalJsonNetwork.links= linksTmp;
-            console.log(finalJsonNetwork)
-            //this.forceUpdate();
-            this.setState({finalJson: finalJsonNetwork})
+            withoutCorrent.splice(item, 0, itemToAddBack)         // return back the current
+            tmpArr = withoutCorrent;
+        }
 
-     }
+
+        //  remove duplicate links
+        let linksTmp = linksToAdd.filter((ele, ind) => ind === linksToAdd.findIndex(elem => elem.source === ele.source && elem.target === ele.target))
+
+        //count total connection type amount
+        linksTmp.map(i => {
+            let pos = arrConnections.map(function (e) { return e.name; }).indexOf(i.connectionType);
+            let count = arrConnections[pos].conAmount;
+            count++
+            arrConnections[pos].conAmount = count;
+        })
+
+        arrConnections.sort(function (a, b) {           //    sort connection types by amount of appearence
+            return b.conAmount - a.conAmount;
+        });
+
+
+        finalJsonNetwork.links = linksTmp;
+        console.log(finalJsonNetwork)
+        console.log(arrConnections)
+        //this.forceUpdate();
+        this.setState({ finalJson: finalJsonNetwork, connectionsAll: arrConnections })
+
+    }
+
+    goToGame=()=>{
+        console.log("inside game")
+        var dataToPass = this.state.finalJson
+        this.props.history.push({
+            pathname: '/game',
+            state: {
+              finalJson: dataToPass
+            }
+          });
+          
+    }
 
     render() {
-        if(localStorage.getItem('jsonRowData')){
-            rawData = JSON.parse(localStorage.getItem('jsonRowData'));         
-       }
-       else{
-        rawData = this.props.location.state.jsonDetails.rawData;
-       }
-       if(localStorage.getItem('jsonDetails')){
-        dataFromLocal = JSON.parse(localStorage.getItem('jsonDetails'));    
+        if (localStorage.getItem('jsonRowData')) {
+            rawData = JSON.parse(localStorage.getItem('jsonRowData'));
         }
-        else{
-         dataFromLocal = this.props.location.state.jsonDetails.rawData
-         }
+        else {
+            rawData = this.props.location.state.jsonDetails.rawData;
+        }
+        if (localStorage.getItem('jsonDetails')) {
+            dataFromLocal = JSON.parse(localStorage.getItem('jsonDetails'));
+        }
+        else {
+            dataFromLocal = this.props.location.state.jsonDetails.rawData
+        }
         //rawData= this.props.location.state.jsonDetails.rawData;
-        console.log(rawData)
-        console.log(this.state.dataBefore)
 
         console.log('render', this.state.finalJson)
 
@@ -432,12 +465,12 @@ class GraphEx extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <Button variant="btn btn-info " onClick={() => this.postJsonToDB(finalJsonNetwork)}>Save network to DB</Button>
+                            <Button style={{padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem'}} variant="btn btn-info " onClick={() => this.postJsonToDB(finalJsonNetwork)}>Save network to DB</Button>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={10}>
-                            <ForceGraph3D
+                    <Row className="overflow-hidden">
+                      
+                            <ForceGraph3D 
                                 graphData={this.state.finalJson}
                                 nodeLabel="id"
                                 linkLabel="connectionType"
@@ -447,7 +480,13 @@ class GraphEx extends Component {
                                 showNavInfo={false}
                                 backgroundColor="rgb(164, 184, 204)"
                                 linkWidth={2}
+                                refresh={true}
                             />
+                        
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Button style={{padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem'}} variant="btn btn-info" onClick={this.goToGame}>Start "play"</Button>
                         </Col>
                     </Row>
                 </Container>
@@ -456,4 +495,4 @@ class GraphEx extends Component {
     }
 }
 
-export default withRouter(GraphEx); 
+export default withRouter(Graph); 

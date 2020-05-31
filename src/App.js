@@ -7,7 +7,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import HomePage from "./Components/HomePage.jsx";
 import Login from "./Components/Login.jsx";
 import SignUp from "./Components/SignUp.jsx";
-import GraphEx from "./Components/GraphEx.jsx";
+import Graph from "./Components/Graph.jsx";
+import Game from './Components/Game';
 
 
 function App() {
@@ -18,7 +19,9 @@ function App() {
         <Route exact path="/"> <Login/> </Route>
         <Route exact path="/sign-up" component={SignUp} />
         <Route exact path="/home"> <HomePage /> </Route>
-        <Route exact path="/graph"> <GraphEx/>  </Route>
+        <Route exact path="/graph"> <Graph/>  </Route>
+        <Route exact path="/game"> <Game/>  </Route>
+
       </Switch>
     </div>
 

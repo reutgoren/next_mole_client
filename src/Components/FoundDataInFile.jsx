@@ -4,8 +4,42 @@ import { withRouter } from 'react-router-dom';
 
 class FoundDataInFile extends Component {
 
+    constructor(props) {
+        super(props)
+      
+        this.state = {
+            btnTitle: 'remove all',
+            btnVariant:'outline-danger',
+            btnState: 'allChacked'
+        }
+        this.handleChange = this.handleChange.bind(this);
+
+    }
+    handleChange = (btn) => {
+        let valTitle = '';
+        let valColor = '';
+        let valState = '';
+        if(btn.target.value==='chacked'){
+            valTitle = 'select all';
+            valColor = 'outline-info';
+            valState = 'allUnchacked';     
+            btn.target.value = 'Unchacked';
+       
+        }
+        else{
+            valTitle = 'remove all';
+            valColor = 'outline-danger';
+            valState = 'allChacked';
+            btn.target.value = 'chacked';
+        }
+        console.log(btn.target.value)
+        this.setState({btnTitle: valTitle, btnVariant: valColor, btnState: valState} ,()=>{
+            this.props.removeAll(this.state.btnState); 
+        })
+
+    }
+
     render() {
-        console.log(this.props.isChecked)
 
         return (
             <div>
@@ -41,7 +75,7 @@ class FoundDataInFile extends Component {
                             {
                                 Object.values(this.props.data).map((item, i) => {
                                     return (
-                                        <ListGroup.Item key={i} className='text-left'> <b>{item.k}</b> apears <b>{item.v.length}</b> times, ratio is: <b>{item.ratio}</b></ListGroup.Item>
+                                        <ListGroup.Item key={i} className='text-left' style={{paddingBottom: '.25rem', paddingTop: '.25rem'}}> <b>{item.k}</b> apears <b>{item.v.length}</b> times, ratio is: <b>{item.ratio}</b></ListGroup.Item>
                                     )
                                 })
                             }
@@ -55,7 +89,6 @@ class FoundDataInFile extends Component {
                             </Card.Subtitle>
                             <Card.Text>you can uncheck connection type and see what happend</Card.Text>
                         </Card.Header>
-                        <Button onClick={this.props.removeAll}>remove all</Button>
                         
                         {
                             this.props.connections.map((item, i) => {
@@ -64,11 +97,13 @@ class FoundDataInFile extends Component {
                                         <InputGroup.Prepend>
                                             <InputGroup.Checkbox value={item.name} onChange={this.props.passedFunction} checked={item.isChecked} aria-label="Checkbox for following text input" />
                                         </InputGroup.Prepend>
-                                        <FormControl placeholder={item.name + " " + item.amount + " times"} aria-label="Text input with checkbox" />
+                                        <FormControl placeholder={item.name + " " + item.conAmount + " times"} aria-label="Text input with checkbox" />
                                     </InputGroup>
                                 )
                             })
                         }
+                         <Button className="mx-auto my-2" variant={this.state.btnVariant} value="chacked" onClick={this.handleChange}>{this.state.btnTitle}</Button>
+
                     </Card>
                 </CardDeck>
             </div>

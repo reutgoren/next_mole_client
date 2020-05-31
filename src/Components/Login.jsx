@@ -60,7 +60,7 @@ class Login extends Component {
     else{
       let api= this.apiUrl+"user/"+emailStr+"/"+passwordStr;
       console.log(api);
-      this.props.history.push("/home");
+      //this.props.history.push("/home");
 
       fetch(api, {
         method: 'GET',
