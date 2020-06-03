@@ -5,6 +5,7 @@ import logo from '../images/logo2.png';
 
 class Category extends Component {
   render() {
+    console.log(this.props.data)
     return (
       <div>
         <Card style={{ width: '12rem', margin: '.3em' }}>
@@ -12,7 +13,7 @@ class Category extends Component {
           <Card.Body>
             <Card.Title>{this.props.data.Name.replace(/_/g, ' ')}</Card.Title>
             <Card.Text>
-              This category has __ nodes and __ vertices
+              This category has {this.props.data.VerteciesInCat} nodes and {this.props.data.EdgesInCat} vertices
     </Card.Text>
             <Button onClick={this.props.getNetwork} variant="info">view network</Button>
           </Card.Body>

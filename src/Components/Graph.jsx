@@ -512,11 +512,13 @@ class Graph extends Component {
 
     goToGame = () => {
         console.log("inside game")
-        var dataToPass = this.state.finalJson
+        var dataToPass = this.state.finalJson;
+        //var nodesData = this.state.allNodes;
         this.props.history.push({
             pathname: '/game',
             state: {
-                finalJson: dataToPass
+                finalJson: dataToPass,
+ 
             }
         });
 

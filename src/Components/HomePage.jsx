@@ -71,7 +71,8 @@ class HomePage extends Component {
   }
 
   componentDidMount=()=>{
-    this.getCategories();
+    //this.getCategories();
+    this.getAmountFotCategory();
   }
 
   getCategories=()=>{
@@ -91,6 +92,34 @@ class HomePage extends Component {
       .then(result => {
         console.log(result);
         if (result!=null) {
+         this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
+        }
+        else {
+         alert("categories wasn't found")
+        }
+      },
+        (error) => {
+          console.log("err=", error);
+        });
+  }
+  getAmountFotCategory=()=>{
+    let api= this.apiUrl+"CategoryAmount";
+    console.log(api);
+    fetch(api, {
+      method: 'GET',
+      //mode: 'no-cors',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        return res.json();
+      })
+      .then(result => {
+        console.log(result);
+        if (result!=null) {
+         //this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
          this.setState({existingCategories: result})
         }
         else {
@@ -101,7 +130,6 @@ class HomePage extends Component {
           console.log("err=", error);
         });
   }
-
   handleSubjectChange = (e) => {
     this.setState({ jsonSubject: e.target.value });
 

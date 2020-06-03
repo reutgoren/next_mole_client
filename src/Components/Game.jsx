@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Container, Row, Col, Dropdown, FormControl, Button } from 'react-bootstrap';
+import { Container, Row, Col, Dropdown, FormControl, Button, ListGroup, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 
 
@@ -19,82 +19,80 @@ class Game extends Component {
         this.state = {
             data: this.props.location.state.finalJson,
             source: '',
-            target: ''
+            target: '',
+            dataForShort: [],
+            dataForGame: [[],[],[],[]]
 
         }
     }
 
-    selectSource=(s)=>{
+    selectSource = (s) => {
         console.log('source: ', s);
         //console.log(this)
-        this.setState({source: s})
+        this.setState({ source: s })
 
     }
 
-    selectTarget=(t)=>{
-        console.log('target: ',t);
-        this.setState({target: t})
+    selectTarget = (t) => {
+        console.log('target: ', t);
+        this.setState({ target: t })
 
     }
 
-    startGame=()=>{
+    startGame = () => {
         console.log("inside play")
         let category = "Game_Of_Thrones";
-        let api= this.apiUrl+"networkStartAGame?categoryNAME="+category;
+        let api = this.apiUrl + "networkStartAGame?categoryNAME=" + category;
         fetch(api, {
             method: 'GET',
             //mode: 'no-cors',
             headers: new Headers({
-              'Content-Type': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
             })
-          })
+        })
             .then(res => {
-              console.log('res=', res);
-              return res.json();
+                console.log('res=', res);
+                return res.json();
             })
             .then(result => {
-              console.log(result);
-              paths = result;
-              this.showPaths();
+                console.log(result);
+                this.setState({ dataForGame: result })
             },
-              (error) => {
-                console.log("err=", error);
-              });
-    }
-    showPaths=()=>{
-
-
-
+                (error) => {
+                    console.log("err=", error);
+                });
     }
 
-    findShortestPaths=()=>{
+    findShortestPaths = () => {
         console.log("inside find shortets paths")
-        //let source = this.state.source;
-        //let target = this.state.target;
-        var source = "Aegon Targaryen";
-        var target = "Sandor Clegane";
+        var source = this.state.source;
+        var target = this.state.target;
+        //var source = "Aegon Targaryen";
+        //var target = "Sandor Clegane";
         let category = "Game_Of_Thrones";
-        let api= this.apiUrl+"networkGetPath/?source="+source+"&target="+target+'&categoryNAME='+category;
+        let api = this.apiUrl + "networkGetPath/?source=" + source + "&target=" + target + '&categoryNAME=' + category;
         fetch(api, {
             method: 'GET',
             //mode: 'no-cors',
             headers: new Headers({
-              'Content-Type': 'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
             })
-          })
+        })
             .then(res => {
-              console.log('res=', res);
-              return res.json();
+                console.log('res=', res);
+                return res.json();
             })
             .then(result => {
-              console.log(result);
-            },
-              (error) => {
-                console.log("err=", error);
-              });
-        
-    }
+                console.log(result);
+                this.setState(
+                    { dataForShort: result[0] })
 
+            },
+                (error) => {
+                    console.log("err=", error);
+                });
+
+    }
 
     render() {
         const CustomToggle = React.forwardRef(({ children, onClick }, ref) => (
@@ -145,96 +143,159 @@ class Game extends Component {
         console.log(this.props.location.state.finalJson)
         return (
             <div>
-                {/*
-                    this.state.data.nodes.map(node=>{
-                        return(
-                            <div>
-                                node: {node.id}
-                            </div>
-                        )
-                    })
-
-                     var source = "Aegon Targaryen";
-                    var target = "Sandor Clegane";
-
-                */ }
                 <Container>
-                    <Row className="mr-20">
-                        <Col>
+                    <Row style={{ margin: 20 }}>
+                        <Col style={{ margin: 20 }}>
+
+                        </Col>
+
+                    </Row>
+
+                    <Row style={{ margin: 20 }}>
+                        <Col sm="4">
                             <Dropdown>
                                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components">
-                                    source
+                                    <b>source</b>
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu as={CustomMenu}>
                                     {
-                                        this.state.data.nodes.map((item,i)=>{
-                                            return(
+                                        this.state.data.nodes.map((item, i) => {
+                                            return (
                                                 <Dropdown.Item onSelect={this.selectSource} eventKey={item.id} key={i}>{item.id} </Dropdown.Item>
                                             )
                                         })
                                     }
-                                    
+
                                 </Dropdown.Menu>
                             </Dropdown>
                         </Col>
-                        <Col>
-                         
+                        <Col sm="3">
+                            <label htmlFor="basic-url">Selected source: </label>
+                        </Col>
+                        <Col sm="4">
+                            <InputGroup className="mb-3">
+                                <FormControl
+                                    placeholder={this.state.source}
+                                    aria-label="source selected"
+                                    aria-describedby="basic-addon2"
+                                />
+                            </InputGroup>
+                        </Col>
+                    </Row>
+                    <Row style={{ margin: 20 }}>
+                        <Col sm="4" >
                             <Dropdown>
                                 <Dropdown.Toggle as={CustomToggle} id="dropdown-custom-components2">
-                                    target
+                                    <b>target</b>
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu as={CustomMenu}>
                                     {
-                                        this.state.data.nodes.map((item,i)=>{
-                                            return(
+                                        this.state.data.nodes.map((item, i) => {
+                                            return (
                                                 <Dropdown.Item onSelect={this.selectTarget} eventKey={item.id} key={i}>{item.id} </Dropdown.Item>
                                             )
                                         })
                                     }
-                                    
+
                                 </Dropdown.Menu>
                             </Dropdown>
-                            
+                        </Col>
+                        <Col sm="3">
+                            <label htmlFor="basic-url">Selected target: </label>
+                        </Col>
+                        <Col sm="4">
+                            <InputGroup className="mb-3">
+                                <FormControl
+                                    placeholder={this.state.target}
+                                    aria-label="source selected"
+                                    aria-describedby="basic-addon2"
+                                />
+
+                            </InputGroup>
                         </Col>
                     </Row>
-                    <Row>
-                        <Button style={{margin: '.5rem', padding: '.5rem 1.8rem', fontSize: '1.2rem'}} onClick={this.startGame}>
-                            play
-                        </Button>   
-                    </Row>
-                    <Row>              
-                        <Button style={{margin: '.5rem', padding: '.5rem 1.8rem', fontSize: '1.2rem'}} onClick={this.findShortestPaths}>
-                            find paths
+                    <Row style={{ margin: 20 }}>
+                        <Col sm="12">
+                            <Button style={{ margin: '.5rem', padding: '.5rem 1.8rem', fontSize: '1.2rem' }} onClick={this.findShortestPaths}>
+                                find paths
                         </Button>
+                        </Col>
                     </Row>
-                    <Row id="paths">
-                        {
-                            paths.map(arr=>{
-                              
-                                    return(
-                                        <div>
-                                              {
-                                              arr.map(item=>{
-                                                  return(
-                                                      <p>
-                                                          {item}
-                                                      </p>
-                                                  )
-                                                   })
-                                                }
-                                        </div>
-                                    )
-                               
-                            })
-                        }
+                    <Row style={{ margin: 20 }}>
+                        <Col sm="3">
+                            <label htmlFor="basic-url">Shortest path: </label>
+                        </Col>
+                        <Col sm="4">
+                            <ListGroup variant="flush">
+                                {
+                                    this.state.dataForShort.map((item, i) => {
+                                        return (
+                                            <ListGroup.Item key={i} className='text-left' style={{ paddingBottom: '.25rem', paddingTop: '.25rem' }}>{item}</ListGroup.Item>
+                                        )
+                                    })
+                                }
+                            </ListGroup>
+                        </Col>
+                    </Row>
+                    <Row style={{ margin: 20 }}>
+                        <Col style={{ margin: 20 }}>
+                            <Button style={{ margin: '.5rem', padding: '.5rem 1.8rem', fontSize: '1.2rem' }} onClick={this.startGame}>
+                                play
+                        </Button>
+                        </Col>
 
                     </Row>
+                    <Row style={{ margin: 20 }}>
 
+                        <Col style={{ margin: 20 }}>
+                            <ListGroup variant="flush">
+                                {                                   
+                                    this.state.dataForGame[0].map((itemm, ii) => {
+                                        return (
+                                            <ListGroup.Item key={ii} className='text-left' style={{ paddingBottom: '.25rem', paddingTop: '.25rem' }}>{itemm}</ListGroup.Item>
+                                        )
+                                    })
+                                }
+                            </ListGroup>
+                        </Col>
+                        <Col style={{ margin: 20 }}>
+                            <ListGroup variant="flush">
+                                {
+                                    this.state.dataForGame[1].map((itemm, ii) => {
+                                        return (
+                                            <ListGroup.Item key={ii} className='text-left' style={{ paddingBottom: '.25rem', paddingTop: '.25rem' }}>{itemm}</ListGroup.Item>
+                                        )
+                                    })
+                                }
+                            </ListGroup>
+                        </Col>
+                        <Col style={{ margin: 20 }}>
+                            <ListGroup variant="flush">
+                                {
+                                    this.state.dataForGame[2].map((itemm, ii) => {
+                                        return (
+                                            <ListGroup.Item key={ii} className='text-left' style={{ paddingBottom: '.25rem', paddingTop: '.25rem' }}>{itemm}</ListGroup.Item>
+                                        )
+                                    })
+                                }
+                            </ListGroup>
+                        </Col>
+                        <Col style={{ margin: 20 }}>
+                            <ListGroup variant="flush">
+                                {
+                                    this.state.dataForGame[3].map((itemm, ii) => {
+                                        return (
+                                            <ListGroup.Item key={ii} className='text-left' style={{ paddingBottom: '.25rem', paddingTop: '.25rem' }}>{itemm}</ListGroup.Item>
+                                        )
+                                    })
+                                }
+                            </ListGroup>
+                        </Col>
+
+                    </Row>
                 </Container>
-
-
             </div>
         );
     }
