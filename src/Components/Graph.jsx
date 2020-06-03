@@ -31,12 +31,27 @@ class Graph extends Component {
             finalJson: { nodes: [], links: [] },
             removedLinks: [],       // save the connections that removed
             connectionsAll: [],
+            allNodes: []
 
         }
     }
 
     postJsonToDB = (file) => {                              // save nodes and links to DB
         const nodesList = file.nodes.map(item => {
+            const { image, index, vx, vy, vz, x, y, z, color, __threeObj, ...withoutGraphParams } = item;         //  remove all graph parameters like vx, vy.....
+            let str = JSON.stringify(withoutGraphParams)
+            let strW = str.replace(/'/g, "").replace(/"|{|}/g, "");
+            let id = item.id;
+            let idW = id.replace(/'/g, "");
+            var singleNode = {
+                NodeNum: idW,
+                NodeImageURL: item.nodeImage,
+                NodeDescription: strW
+            }
+            return singleNode;
+        })
+
+        const nodesListAll = this.state.allNodes.map(item => {
             const { image, index, vx, vy, vz, x, y, z, color, __threeObj, ...withoutGraphParams } = item;         //  remove all graph parameters like vx, vy.....
             let str = JSON.stringify(withoutGraphParams)
             let strW = str.replace(/'/g, "").replace(/"|{|}/g, "");
@@ -64,13 +79,16 @@ class Graph extends Component {
             }
             return singleLink;
         })
+
         console.log(linksList);
         console.log(this.props.location.state.jsonDetails);
         let str = this.props.location.state.jsonDetails.subject;
         console.log(str)
         var tableName = str.replace(/ /g, "_");
         console.log(tableName)
-        fetch(this.apiUrl + 'nodes/' + tableName, {        //POST nodes
+
+
+        fetch(this.apiUrl + 'nodes/' + tableName, {        //POST nodes with links
             method: 'POST',
             body: JSON.stringify(nodesList),
             //mode: 'no-cors',
@@ -90,6 +108,26 @@ class Graph extends Component {
                     console.log("err post=", error);
                 });
 
+
+        fetch(this.apiUrl + 'nodesSaveAll/' + tableName, {        //POST nodes with / without links
+            method: 'POST',
+            body: JSON.stringify(nodesListAll),
+            //mode: 'no-cors',
+            headers: new Headers({
+                'Content-type': 'application/json; charset=UTF-8'
+            })
+        })
+            .then(res => {
+                console.log('res=', res);
+                return res.json()
+            })
+            .then(
+                (result) => {
+                    console.log("fetch POST= ", result);
+                },
+                (error) => {
+                    console.log("err post=", error);
+                });
         fetch(this.apiUrl + 'links/' + tableName, {              //POST links
             method: 'POST',
             body: JSON.stringify(linksList),
@@ -114,28 +152,28 @@ class Graph extends Component {
         console.log(btnState)
         removedLinksTmp = this.state.removedLinks;
         console.log(finalJsonNetwork.links)
-        if(btnState==='allUnchacked'){
+        if (btnState === 'allUnchacked') {
             finalJsonNetwork.links.map(i => removedLinksTmp.push(i))
             finalJsonNetwork.links.splice(0);
-    
+
             console.log('links remain: ', finalJsonNetwork.links)
             console.log('removed ', removedLinksTmp);
-            arrConnections.map(o=>{
-                o.isChecked=false
+            arrConnections.map(o => {
+                o.isChecked = false
             })
         }
-        else{
+        else {
             removedLinksTmp.map(i => finalJsonNetwork.links.push(i))
             removedLinksTmp.splice(0);
             console.log('links remain: ', finalJsonNetwork.links)
             console.log('removed ', removedLinksTmp);
-            arrConnections.map(o=>{
-                o.isChecked=true
+            arrConnections.map(o => {
+                o.isChecked = true
             })
         }
-        
+
         this.setState({
-            connectionsAll:arrConnections,
+            connectionsAll: arrConnections,
             finalJson: finalJsonNetwork,
             removedLinks: removedLinksTmp,
         })
@@ -145,11 +183,11 @@ class Graph extends Component {
         removedLinksTmp = this.state.removedLinks;
         console.log(removedLinksTmp, finalJsonNetwork)
         if (!x.target.checked) {         //  if connection removed        
-                let pos = arrConnections.map(function (e) { return e.name; }).indexOf(x.target.value);
-                arrConnections[pos].isChecked = false;
-                this.setState({connectionsAll: arrConnections})
+            let pos = arrConnections.map(function (e) { return e.name; }).indexOf(x.target.value);
+            arrConnections[pos].isChecked = false;
+            this.setState({ connectionsAll: arrConnections })
             remove();
-          
+
             function remove() {
                 for (let j in finalJsonNetwork.links) {
                     if (finalJsonNetwork.links[j].connectionType === x.target.value) {
@@ -171,7 +209,7 @@ class Graph extends Component {
         else {
             let pos = arrConnections.map(function (e) { return e.name; }).indexOf(x.target.value);
             arrConnections[pos].isChecked = true;
-            this.setState({connectionsAll: arrConnections})
+            this.setState({ connectionsAll: arrConnections })
             funclear();
             function funclear() {
                 for (let k in removedLinksTmp) {
@@ -208,7 +246,7 @@ class Graph extends Component {
         var id = this.getId(arrKeysAndRadio);
         if (id !== '') {
             this.getNodes(rawData, id);
-            this.getLinks(rawData, id, arrConnections);
+            //this.getLinks(rawData, id, arrConnections);
         }
     }
 
@@ -363,10 +401,13 @@ class Graph extends Component {
         }
         finalJsonNetwork.nodes = nodesToAdd;
         console.log(finalJsonNetwork.nodes);
-        this.setState({ finalJson: finalJsonNetwork })
+        this.setState({ finalJson: finalJsonNetwork }, () => { this.getLinks(rawData, id, arrConnections) })
+
     }
 
     getLinks = (arr, id, arrConnections) => {
+        console.log('inside get links')
+        console.log(this.state.finalJson)
         var linksToAdd = [];
         var tmpArr = arr;                      // search links in the original array, every loop we dismiss the current
 
@@ -401,13 +442,53 @@ class Graph extends Component {
 
 
         //  remove duplicate links
-        let linksTmp = linksToAdd.filter((ele, ind) => ind === linksToAdd.findIndex(elem => elem.source === ele.source && elem.target === ele.target))
+        var linksTmp = linksToAdd.filter((ele, ind) => ind === linksToAdd.findIndex(elem => elem.source === ele.source && elem.target === ele.target))
+
+        //  remove nodes without links
+        var originalArray2 = this.state.finalJson.nodes;
+        var nodesWithLinks = [];
+        var nodesWithoutLinks = [];
+        var cnt = 0;
+        var cntWithout = 0;
+        var originalArray = Array.from(new Set(originalArray2));
+        console.log(originalArray)
+        for (let arr in originalArray) {
+            var hasLink = false;
+            for (let filter in linksTmp) {
+                if (originalArray[arr].id === linksTmp[filter].target || originalArray[arr].id === linksTmp[filter].source) {
+                    hasLink = true;
+                }
+            }
+            if (hasLink) {
+                cnt++;
+                nodesWithLinks.push(originalArray[arr]);
+
+            }
+
+            else {
+                cntWithout++;
+                nodesWithoutLinks.push(originalArray[arr])
+
+            }
+        }
+
+        // remove duplicates
+        nodesWithLinks = nodesWithLinks.filter((ele, ind) => ind === nodesWithLinks.findIndex(elem => elem.id === ele.id && elem.id === ele.id))
+        nodesWithoutLinks = nodesWithoutLinks.filter((ele, ind) => ind === nodesWithoutLinks.findIndex(elem => elem.id === ele.id && elem.id === ele.id))
+        originalArray = originalArray.filter((ele, ind) => ind === originalArray.findIndex(elem => elem.id === ele.id && elem.id === ele.id))
+
+        console.log('with', cnt)
+        console.log('without', cntWithout)
+        console.log('original ', originalArray)
+        console.log('nodesWithLinks ', nodesWithLinks)
+        console.log('nodesWithoutLinks ', nodesWithoutLinks)
+
 
         //count total connection type amount
         linksTmp.map(i => {
             let pos = arrConnections.map(function (e) { return e.name; }).indexOf(i.connectionType);
             let count = arrConnections[pos].conAmount;
-            count++
+            count++;
             arrConnections[pos].conAmount = count;
         })
 
@@ -417,23 +498,28 @@ class Graph extends Component {
 
 
         finalJsonNetwork.links = linksTmp;
+        finalJsonNetwork.nodes = nodesWithLinks;
         console.log(finalJsonNetwork)
         console.log(arrConnections)
         //this.forceUpdate();
-        this.setState({ finalJson: finalJsonNetwork, connectionsAll: arrConnections })
+        this.setState({
+            finalJson: finalJsonNetwork,
+            connectionsAll: arrConnections,
+            allNodes: originalArray
+        })
 
     }
 
-    goToGame=()=>{
+    goToGame = () => {
         console.log("inside game")
         var dataToPass = this.state.finalJson
         this.props.history.push({
             pathname: '/game',
             state: {
-              finalJson: dataToPass
+                finalJson: dataToPass
             }
-          });
-          
+        });
+
     }
 
     render() {
@@ -465,28 +551,28 @@ class Graph extends Component {
                     </Row>
                     <Row>
                         <Col>
-                            <Button style={{padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem'}} variant="btn btn-info " onClick={() => this.postJsonToDB(finalJsonNetwork)}>Save network to DB</Button>
+                            <Button style={{ padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem' }} variant="btn btn-info " onClick={() => this.postJsonToDB(finalJsonNetwork)}>Save network to DB</Button>
                         </Col>
                     </Row>
                     <Row className="overflow-hidden">
-                      
-                            <ForceGraph3D 
-                                graphData={this.state.finalJson}
-                                nodeLabel="id"
-                                linkLabel="connectionType"
-                                nodeAutoColorBy="id"
-                                nodeRelSize={8}
-                                linkThreeObjectExtend={true}
-                                showNavInfo={false}
-                                backgroundColor="rgb(164, 184, 204)"
-                                linkWidth={2}
-                                refresh={true}
-                            />
-                        
+
+                        <ForceGraph3D
+                            graphData={this.state.finalJson}
+                            nodeLabel="id"
+                            linkLabel="connectionType"
+                            nodeAutoColorBy="id"
+                            nodeRelSize={8}
+                            linkThreeObjectExtend={true}
+                            showNavInfo={false}
+                            backgroundColor="rgb(164, 184, 204)"
+                            linkWidth={2}
+                            refresh={true}
+                        />
+
                     </Row>
                     <Row>
                         <Col>
-                            <Button style={{padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem'}} variant="btn btn-info" onClick={this.goToGame}>Start "play"</Button>
+                            <Button style={{ padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem' }} variant="btn btn-info" onClick={this.goToGame}>Start "play"</Button>
                         </Col>
                     </Row>
                 </Container>
