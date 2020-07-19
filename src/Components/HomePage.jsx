@@ -66,7 +66,8 @@ class HomePage extends Component {
       jsonDescription: '',
       jsonRowData: '',
       jsonImage: '',
-      existingCategories:[]
+      existingCategories:[],
+      networkToShow: {nodes: ['no nodes to show'], links: ['no links to show']}
     }
   }
 
@@ -94,10 +95,10 @@ class HomePage extends Component {
         console.log(result);
         if (result!=null) {
          //this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
-         this.setState({existingCategories: result})
+         this.setState({networkToShow: {nodes:result.Nodes}, networkToShow: {links: result.Links} })
         }
         else {
-         alert("categories wasn't found")
+         alert("network wasn't found")
         }
       },
         (error) => {
@@ -182,8 +183,35 @@ class HomePage extends Component {
     }
 
   }
-  getNetForCat=()=>{
-    console.log("inside get network")
+  getNetForCat=(category)=>{
+    console.log("inside get network");
+    console.log(category)
+    let api= this.apiUrl+category;
+    console.log(api);
+    fetch(api, {
+      method: 'GET',
+      //mode: 'no-cors',
+      headers: new Headers({
+        'Content-Type': 'application/json; charset=UTF-8',
+      })
+    })
+      .then(res => {
+        console.log('res=', res);
+        return res.json();
+      })
+      .then(result => {
+        console.log(result);
+        if (result!=null) {
+         //this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
+         this.setState({existingCategories: result})
+        }
+        else {
+         alert("categories wasn't found")
+        }
+      },
+        (error) => {
+          console.log("err=", error);
+        });
   }
 
   render() {
