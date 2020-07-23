@@ -15,7 +15,7 @@ class Category extends Component {
             <Card.Text>
               This category has {this.props.data.VerteciesInCat} nodes and {this.props.data.EdgesInCat} vertices
     </Card.Text>
-            <Button onClick={this.props.getNetwork(this.props.data.Name)} variant="info">view network</Button>
+            <Button onClick={()=>this.props.getNetwork(this.props.data.Name)} variant="info">view network</Button>
           </Card.Body>
         </Card>
       </div>

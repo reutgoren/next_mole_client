@@ -54,8 +54,8 @@ class HomePage extends Component {
   constructor(props) {
     super(props)
 
-    //let local = false;
-    let local = true;
+    let local = false;
+    //let local = true;
     this.apiUrl = 'https://localhost:44312/api/';
     if (!local) {
       this.apiUrl = 'http://proj.ruppin.ac.il/igroup8/prod/api/';
@@ -95,10 +95,11 @@ class HomePage extends Component {
         console.log(result);
         if (result!=null) {
          //this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
-         this.setState({networkToShow: {nodes:result.Nodes}, networkToShow: {links: result.Links} })
+         this.setState({existingCategories: result})
+
         }
         else {
-         alert("network wasn't found")
+         alert("categories wasn't found")
         }
       },
         (error) => {
@@ -183,10 +184,9 @@ class HomePage extends Component {
     }
 
   }
-  getNetForCat=(category)=>{
+  getNetForCat = (category) => {
     console.log("inside get network");
-    console.log(category)
-    let api= this.apiUrl+category;
+    let api= this.apiUrl+'getNetwork/?categoryNAME='+category;
     console.log(api);
     fetch(api, {
       method: 'GET',
@@ -202,11 +202,16 @@ class HomePage extends Component {
       .then(result => {
         console.log(result);
         if (result!=null) {
-         //this.setState({existingCategories: result}, ()=>this.getAmountFotCategory())
-         this.setState({existingCategories: result})
+          this.setState(prevState => ({
+            networkToShow: {                  
+                ...prevState.networkToShow,   
+                nodes:result.Nodes,
+                links: result.Links       
+            }
+        }), ()=> console.log(this.state.networkToShow))
         }
         else {
-         alert("categories wasn't found")
+         alert("network wasn't found")
         }
       },
         (error) => {
@@ -247,7 +252,9 @@ class HomePage extends Component {
         <Container style={{ marginTop: 30 }}>
           <Row className='justify-content-center'>
           {
-            this.state.existingCategories.map((item) =>  <Category key={item.Id} data={item} getNetwork={this.getNetForCat}/>)
+            this.state.existingCategories.map((item, i) =>  <Category key={i} data={item} getNetwork={this.getNetForCat}/>)
+           /* this.state.existingCategories.map((item) =>  <Category key={item.Id} data={item} getNetwork={this.getNetForCat}/>)*/
+
             }
           </Row>
           <Row>
