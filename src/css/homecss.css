@@ -18,4 +18,31 @@
     box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.11), 0 5px 15px 0 rgba(0, 0, 0, 0.08);
     box-sizing: border-box;
   }
+  .jumbo {
+    background: url(${bg}) no-repeat fixed bottom;
+    background-size: cover;
+    height: 360px;
+    position: relative;
+    z-index: -2;
+  }
+  .overlay {
   
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+  }
+  /*
+  .header{
+    margin: 40px 20px;
+    text-align: left;
+    border: 2px solid red;
+  }
+  */
+  .temp{
+   
+    align-items: center;
+    justify-content: center;
+  }

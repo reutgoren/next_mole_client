@@ -1,46 +1,65 @@
-{/*import React from "react";
+import React, { Component } from "react";
 import Popup from "reactjs-popup";
-import styled from 'styled-components';
-const Styles = styled.div`
-.modal {
-  font-size: 12px;
-}
-.modal > .header {
-  width: 100%;
-  border-bottom: 1px solid gray;
-  font-size: 18px;
-  text-align: center;
-  padding: 5px;
-}
-.modal > .content {
-  width: 100%;
-  padding: 10px 5px;
-}
-.modal > .actions {
-  width: 100%;
-  padding: 10px 5px;
-  margin: auto;
-  text-align: center;
-}
-.modal > .close {
-  cursor: pointer;
-  position: absolute;
-  display: block;
-  padding: 2px 5px;
-  line-height: 20px;
-  right: -10px;
-  top: -10px;
-  font-size: 24px;
-  background: #ffffff;
-  border-radius: 18px;
-  border: 1px solid #cfcece;
-}
-`;
-export default () => (
-    <Styles>
-    <Popup trigger={<button className="button"> Open Modal </button>} modal>
+import '../css/Popup.css';
+
+
+
+class PopNet extends Component {
+  constructor(props) {
+    super(props);
+    //this.state = { openPop: false };
+    //this.openModal = this.openModal.bind(this);
+   // this.closeModal = this.closeModal.bind(this);
+  }
+  //openModal() {
+  //  this.setState({ open: true });
+ // }
+ // closeModal() {
+   // this.setState({ open: false });
+  //}
+//var isOpen = false
+
+  render() {
+    return(
+      <div>
+          <Popup
+         open={this.props.isOpen}
+         closeOnDocumentClick
+         onClose={this.closeModal}
+        >
+          <div className="PopModal">
+            <a className="close" onClick={()=>this.props.closeModal()}>
+              &times;
+            </a>
+            <div className="header"> Modal Title </div>
+          <div className="content">
+            {" "}
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, a nostrum.
+            Dolorem, repellat quidem ut, minima sint vel eveniet quibusdam voluptates
+            delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
+            <br />
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
+            commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae
+            explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
+          </div>
+          <div className="actions">
+          
+            <button
+              className="PopButton"
+              onClick={() => {
+                console.log("modal closed ");
+                this.props.closeModal();
+              }}
+            >
+              close modal
+            </button>
+          </div>
+          </div>
+        </Popup>
+        {/*
+    <Popup trigger={<button className="PopButton"> Open Modal </button>} modal>
       {close => (
-        <div className="modal">
+        <div className="PopModal">
           <a className="close" onClick={close}>
             &times;
           </a>
@@ -57,7 +76,7 @@ export default () => (
           </div>
           <div className="actions">
             <Popup
-              trigger={<button className="button"> Trigger </button>}
+              trigger={<button className="PopButton"> Trigger </button>}
               position="top center"
               closeOnDocumentClick
             >
@@ -69,7 +88,7 @@ export default () => (
               </span>
             </Popup>
             <button
-              className="button"
+              className="PopButton"
               onClick={() => {
                 console.log("modal closed ");
                 close();
@@ -81,7 +100,10 @@ export default () => (
         </div>
       )}
     </Popup>
-    </Styles>
-  );
+     */}
+    </div>
+    )
+  }
+}
 
-            */}
+export default PopNet;

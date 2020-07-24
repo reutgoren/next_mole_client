@@ -1,24 +1,24 @@
-.modal {
+.PopModal {
     font-size: 12px;
   }
-  .modal > .header {
+  .PopModal > .header {
     width: 100%;
     border-bottom: 1px solid gray;
     font-size: 18px;
     text-align: center;
     padding: 5px;
   }
-  .modal > .content {
+  .PopModal > .content {
     width: 100%;
     padding: 10px 5px;
   }
-  .modal > .actions {
+  .PopModal > .actions {
     width: 100%;
     padding: 10px 5px;
     margin: auto;
     text-align: center;
   }
-  .modal > .close {
+  .PopModal > .close {
     cursor: pointer;
     position: absolute;
     display: block;
@@ -30,4 +30,24 @@
     background: #ffffff;
     border-radius: 18px;
     border: 1px solid #cfcece;
+  }
+
+  .PopButton{
+    font-family: Roboto,Arial,sans-serif;
+    color: #000;
+    cursor: pointer;
+    padding: 0 30px;
+    display: inline-block;
+    margin: 10px 15px;
+    text-transform: uppercase;
+    line-height: 2em;
+    letter-spacing: 1.5px;
+    font-size: 1em;
+    outline: none;
+    position: relative;
+    font-size: 14px;
+    border: 3px solid #cfcece;
+    background-color: #fff;
+    border-radius: 15px 15px 15px 15px;
+    transition: all .3s;
   }
