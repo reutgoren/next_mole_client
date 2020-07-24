@@ -15,11 +15,17 @@ import Nav from '../Components/Nav';
 import UploadJson from './UploadJson';
 import UploadImage from './UploadImage.jsx';
 import Category from './Category';
+import PopNetPopNet from './PopNet';
+import Popup from "reactjs-popup";
+import '../css/Popup.css';
+
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal)
+
+var net = false;
 
 const Styles = styled.div`
   .jumbo {
@@ -47,6 +53,39 @@ const Styles = styled.div`
    
     align-items: center;
     justify-content: center;
+  }
+  .modal {
+    font-size: 12px;
+  }
+  .modal > .header {
+    width: 100%;
+    border-bottom: 1px solid gray;
+    font-size: 18px;
+    text-align: center;
+    padding: 5px;
+  }
+  .modal > .content {
+    width: 100%;
+    padding: 10px 5px;
+  }
+  .modal > .actions {
+    width: 100%;
+    padding: 10px 5px;
+    margin: auto;
+    text-align: center;
+  }
+  .modal > .close {
+    cursor: pointer;
+    position: absolute;
+    display: block;
+    padding: 2px 5px;
+    line-height: 20px;
+    right: -10px;
+    top: -10px;
+    font-size: 24px;
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #cfcece;
   }
 `;
 
@@ -248,8 +287,52 @@ class HomePage extends Component {
             </div>
           </Container>
         </Styles>
-
-        <Container style={{ marginTop: 30 }}>
+        <Container>
+        <Popup trigger={<button className="button"> Open Modal </button>} modal>
+    {close => (
+      <div className="modal">
+        <a className="close" onClick={close}>
+          &times;
+        </a>
+        <div className="header"> Modal Title </div>
+        <div className="content">
+          {" "}
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, a nostrum.
+          Dolorem, repellat quidem ut, minima sint vel eveniet quibusdam voluptates
+          delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
+          <br />
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
+          commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae
+          explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
+        </div>
+        <div className="actions">
+          <Popup
+            trigger={<button className="button"> Trigger </button>}
+            position="top center"
+            closeOnDocumentClick
+          >
+            <span>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae
+              magni omnis delectus nemo, maxime molestiae dolorem numquam
+              mollitia, voluptate ea, accusamus excepturi deleniti ratione
+              sapiente! Laudantium, aperiam doloribus. Odit, aut.
+            </span>
+          </Popup>
+          <button
+            className="button"
+            onClick={() => {
+              console.log("modal closed ");
+              close();
+            }}
+          >
+            close modal
+          </button>
+        </div>
+      </div>
+    )}
+  </Popup>
+  </Container>
+          <Container style={{ marginTop: 30 }}>
           <Row className='justify-content-center'>
           {
             this.state.existingCategories.map((item, i) =>  <Category key={i} data={item} getNetwork={this.getNetForCat}/>)

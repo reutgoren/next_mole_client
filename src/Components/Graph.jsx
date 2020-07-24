@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { ForceGraph3D } from 'react-force-graph';
 import FoundDataInFile from './FoundDataInFile';
 import gotData from '../gotData.json'
-import { easeLinear } from 'd3';
+//import { easeLinear } from 'd3';
 
 
 //var finalJson = { nodes: [], links: [] };

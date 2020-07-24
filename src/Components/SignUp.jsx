@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import '../css/index.css';
-import { csvParse } from "d3";
+//import { csvParse } from "d3";
 
 const MySwal = withReactContent(Swal)
 
