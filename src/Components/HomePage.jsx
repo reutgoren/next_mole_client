@@ -6,19 +6,17 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import User from '../images/User.png'
 import Form from 'react-bootstrap/Form';
-import styled from 'styled-components';
-import net1 from '../images/net1.png';
-import bg from '../images/bgHomePage.png';
+//import styled from 'styled-components';
+//import net1 from '../images/net1.png';
+//import bg from '../images/bgHomePage.png';
 import { withRouter } from 'react-router-dom';
-import logo2 from '../images/logo2.png';
+//import logo2 from '../images/logo2.png';
 import Nav from '../Components/Nav';
 import UploadJson from './UploadJson';
 import UploadImage from './UploadImage.jsx';
 import Category from './Category';
 import PopNet from './PopNet';
 import '../css/homecss.css';
-import Popup from "reactjs-popup";
-import '../css/Popup.css';
 
 
 import Swal from 'sweetalert2';
@@ -183,8 +181,10 @@ class HomePage extends Component {
         return res.json();
       })
       .then(result => {
-        console.log(result);
         if (result != null) {
+          result.Nodes.map((item)=>item.id=item.NodeNum);
+          result.Links.map((item)=>{item.target=item.TargetNode; item.source=item.SourceNode});
+          console.log(result)
           this.setState(prevState => ({
             networkToShow: {
               ...prevState.networkToShow,
@@ -238,6 +238,7 @@ closeModal() {
                     <p>User Name</p>
                   </Col>
                 </Row>
+                
               </Col>
             </Row>
           </div>

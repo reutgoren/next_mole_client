@@ -20,6 +20,7 @@ class PopNet extends Component {
   //}
 //var isOpen = false
   render() {
+    console.log(this.props.data)
     return(
       <div>
           <Popup
@@ -34,25 +35,21 @@ class PopNet extends Component {
             <div className="header"> {this.props.category} network</div>
           <div className="content" style={{innerWidth:'1000', maxHeight: '800', width: '1000' }}>
             {" "}
-            {
+      
   <ForceGraph3D
   graphData={this.props.data}
+  nodeAutoColorBy="id"
   nodeRelSize={8}
   linkThreeObjectExtend={true}
   showNavInfo={false}
   linkWidth={2}
+  linkColor="#333"
   refresh={true}
-  scales={0.00001}
-  nodeLabel="id"
-  backgroundColor="rgb(164, 184, 204)"
-  position="1 1 0.0001"
+  backgroundColor="#fff"
+  
 />
 
-            }
-            <br />
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
-            commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae
-            explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
+            
           </div>
           <div className="actions">
           
@@ -63,56 +60,12 @@ class PopNet extends Component {
                 this.props.closeModal();
               }}
             >
-              close modal
+              close window
             </button>
           </div>
           </div>
         </Popup>
-        {/*
-    <Popup trigger={<button className="PopButton"> Open Modal </button>} modal>
-      {close => (
-        <div className="PopModal">
-          <a className="close" onClick={close}>
-            &times;
-          </a>
-          <div className="header"> Modal Title </div>
-          <div className="content">
-            {" "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, a nostrum.
-            Dolorem, repellat quidem ut, minima sint vel eveniet quibusdam voluptates
-            delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
-            <br />
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
-            commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae
-            explicabo nemo nam libero ad, doloribus, voluptas rem alias. Vitae?
-          </div>
-          <div className="actions">
-            <Popup
-              trigger={<button className="PopButton"> Trigger </button>}
-              position="top center"
-              closeOnDocumentClick
-            >
-              <span>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae
-                magni omnis delectus nemo, maxime molestiae dolorem numquam
-                mollitia, voluptate ea, accusamus excepturi deleniti ratione
-                sapiente! Laudantium, aperiam doloribus. Odit, aut.
-              </span>
-            </Popup>
-            <button
-              className="PopButton"
-              onClick={() => {
-                console.log("modal closed ");
-                close();
-              }}
-            >
-              close modal
-            </button>
-          </div>
-        </div>
-      )}
-    </Popup>
-     */}
+      
     </div>
     )
   }

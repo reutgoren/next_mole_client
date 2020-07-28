@@ -572,11 +572,12 @@ class Graph extends Component {
                         />
 
                     </Row>
-                    <Row>
+                   {/* <Row>
                         <Col>
                             <Button style={{ padding: '1.175rem 0.75rem', fontSize: '1.1rem', marginBottom: '2rem' }} variant="btn btn-info" onClick={this.goToGame}>Start "play"</Button>
                         </Col>
                     </Row>
+                     */}
                 </Container>
             </div >
         )

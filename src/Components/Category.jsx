@@ -5,7 +5,7 @@ import logo from '../images/logo2.png';
 
 class Category extends Component {
   render() {
-    console.log(this.props.data)
+    //console.log(this.props.data)
     return (
       <div>
         <Card style={{ width: '12rem', margin: '.3em' }}>
