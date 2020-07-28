@@ -1,5 +1,7 @@
 .PopModal {
     font-size: 12px;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
   .PopModal > .header {
     width: 100%;
@@ -11,6 +13,8 @@
   .PopModal > .content {
     width: 100%;
     padding: 10px 5px;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
   .PopModal > .actions {
     width: 100%;
@@ -31,6 +35,11 @@
     border-radius: 18px;
     border: 1px solid #cfcece;
   }
+  .PopModal div,
+  .PopModal canvas{
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
 
   .PopButton{
     font-family: Roboto,Arial,sans-serif;
@@ -50,4 +59,8 @@
     background-color: #fff;
     border-radius: 15px 15px 15px 15px;
     transition: all .3s;
+  }
+  .popup-content {
+    width: 90% !important;
+    height: 500px !important;
   }

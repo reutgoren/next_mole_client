@@ -33,12 +33,11 @@ class PopNet extends Component {
               &times;
             </a>
             <div className="header"> Modal Title </div>
-          <div className="content">
+          <div className="content" style={{innerWidth:'1000', maxHeight: '800', width: '1000' }}>
             {" "}
             {
   <ForceGraph3D
   graphData={this.props.data}
-
   nodeRelSize={8}
   linkThreeObjectExtend={true}
   showNavInfo={false}
@@ -47,6 +46,7 @@ class PopNet extends Component {
   scales={0.00001}
   nodeLabel="id"
   backgroundColor="rgb(164, 184, 204)"
+  position="1 1 0.0001"
 />
 
             }
