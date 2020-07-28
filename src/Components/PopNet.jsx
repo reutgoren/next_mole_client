@@ -19,7 +19,6 @@ class PopNet extends Component {
    // this.setState({ open: false });
   //}
 //var isOpen = false
-
   render() {
     return(
       <div>
@@ -32,7 +31,7 @@ class PopNet extends Component {
             <a className="close" onClick={()=>this.props.closeModal()}>
               &times;
             </a>
-            <div className="header"> Modal Title </div>
+            <div className="header"> {this.props.category} network</div>
           <div className="content" style={{innerWidth:'1000', maxHeight: '800', width: '1000' }}>
             {" "}
             {

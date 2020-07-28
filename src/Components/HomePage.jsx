@@ -26,7 +26,7 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal)
 
-var net = false;
+var currentCat = null;
 
 
 class HomePage extends Component {
@@ -168,6 +168,7 @@ class HomePage extends Component {
 
   getNetForCat = (category) => {
     console.log("inside get network");
+    currentCat = category;
     let api = this.apiUrl + 'getNetwork/?categoryNAME=' + category;
     console.log(api);
     fetch(api, {
@@ -243,7 +244,7 @@ closeModal() {
         </Container>
         <Container>
           <Row>
-         <PopNet isOpen={this.state.open} closeModal={this.closeModal} data={this.state.networkToShow}/>
+         <PopNet isOpen={this.state.open} closeModal={this.closeModal} category={currentCat} data={this.state.networkToShow}/>
           </Row>
 
         </Container>
