@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Popup from "reactjs-popup";
 import '../css/Popup.css';
+import { ForceGraph3D } from 'react-force-graph';
 
 
 
@@ -34,9 +35,21 @@ class PopNet extends Component {
             <div className="header"> Modal Title </div>
           <div className="content">
             {" "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque, a nostrum.
-            Dolorem, repellat quidem ut, minima sint vel eveniet quibusdam voluptates
-            delectus doloremque, explicabo tempore dicta adipisci fugit amet dignissimos?
+            {
+  <ForceGraph3D
+  graphData={this.props.data}
+
+  nodeRelSize={8}
+  linkThreeObjectExtend={true}
+  showNavInfo={false}
+  linkWidth={2}
+  refresh={true}
+  scales={0.00001}
+  nodeLabel="id"
+  backgroundColor="rgb(164, 184, 204)"
+/>
+
+            }
             <br />
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur sit
             commodi beatae optio voluptatum sed eius cumque, delectus saepe repudiandae

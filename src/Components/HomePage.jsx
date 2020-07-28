@@ -243,7 +243,7 @@ closeModal() {
         </Container>
         <Container>
           <Row>
-         <PopNet isOpen={this.state.open} closeModal={this.closeModal}/>
+         <PopNet isOpen={this.state.open} closeModal={this.closeModal} data={this.state.networkToShow}/>
           </Row>
 
         </Container>
